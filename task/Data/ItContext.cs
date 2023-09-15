@@ -1,13 +1,13 @@
-﻿using it.Models;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using it.Areas.Admin.Models;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
+using Vue.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace it.Data
+namespace Vue.Data
 {
     public class ItContext : DbContext
     {
@@ -20,31 +20,41 @@ namespace it.Data
 
         }
 
-        public DbSet<UserModel> UserModel { get; set; }
+        public DbSet<TaskStatusModel> TaskStatusModel { get; set; }
+        public DbSet<TaskModel> TaskModel { get; set; }
+        public DbSet<TaskAssigneeModel> TaskAssigneeModel { get; set; }
+        public DbSet<ProjectModel> ProjectModel { get; set; }
+        public DbSet<ProjectAssigneeModel> ProjectAssigneeModel { get; set; }
         public DbSet<AuditTrailsModel> AuditTrailsModel { get; set; }
-        public DbSet<ProcessGroupModel> ProcessGroupModel { get; set; }
-        public DbSet<ProcessModel> ProcessModel { get; set; }
-        //public override int SaveChanges()
-        //{
-        //    var audit = new Audit();
-        //    audit.PreSaveChanges(this);
-        //    var rowAffecteds = base.SaveChanges();
-        //    audit.PostSaveChanges();
 
-        //    base.SaveChanges();
+        public DbSet<UserModel> UserModel { get; set; }
+        public DbSet<UserRoleModel> UserRoleModel { get; set; }
 
-        //    return rowAffecteds;
-        //}
         //public DbSet<User2Model> User2Model { get; set; }
-        //public virtual async Task<int> SaveChangesAsync()
-        //{
-        //    var audit = new Audit();
-        //    audit.CreatedBy = "ZZZ Projects"; // Optional
-        //    //OnBeforeSaveChanges();
-        //    var result = await base.SaveChangesAsync();
-        //    var entries = audit.Entries;
-        //    return result;
-        //}
+        public DbSet<EmailModel> EmailModel { get; set; }
+        public DbSet<TokenModel> TokenModel { get; set; }
+        public DbSet<DepartmentModel> DepartmentModel { get; set; }
+        public DbSet<UserDepartmentModel> UserDepartmentModel { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserRoleModel>().ToTable("AspNetUserRoles").HasKey(table => new
+            {
+                table.RoleId,
+                table.UserId
+            });
+            modelBuilder.Entity<TaskAssigneeModel>().ToTable("taskAssignee").HasKey(table => new
+            {
+                table.taskId,
+                table.userId
+            });
+            modelBuilder.Entity<ProjectAssigneeModel>().ToTable("projectAssignee").HasKey(table => new
+            {
+                table.projectId,
+                table.userId
+            });
+
+        }
         public override int SaveChanges()
         {
             OnBeforeSaveChanges();
@@ -109,15 +119,19 @@ namespace it.Data
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<IdentityUser>().ToTable("AspNetUsers");
-
-            //modelBuilder.Entity<DocumentModel>().HasMany(l => l.Teams).WithOne().HasForeignKey("LeagueId");
-
-        }
         protected override void ConfigureConventions(ModelConfigurationBuilder builder)
         {
         }
+    }
+    public class FilterIdRaw
+    {
+        [Key]
+        public int ItemId { get; set; }
+        public string Name { get; set; }
+    }
+    public class SizeRaw
+    {
+        [Key]
+        public long Size { get; set; }
     }
 }
