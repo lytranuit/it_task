@@ -40,50 +40,7 @@
 		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Remove="wwwroot\images\clientlogo_astahealthcare.com_f1800.png" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="frontend\src\assets\images\favicon.png" />
-	</ItemGroup>
-	<ItemGroup>
 		<_WebToolingArtifacts Remove="Properties\PublishProfiles\web.pubxml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Include="frontend\src\assets\images\favicon.png">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Areas\Identity\Pages\Account\AccessDenied.cshtml" />
-		<None Include="Areas\Identity\Pages\Account\Login.cshtml" />
-		<None Include="Areas\Identity\Pages\Account\_StatusMessage.cshtml" />
-		<None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
-		<None Include="Areas\Identity\Pages\Error.cshtml" />
-		<None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
-		<None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
-		<None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
-		<None Include="frontend\.vscode\extensions.json" />
-		<None Include="frontend\package-lock.json" />
-		<None Include="frontend\package.json" />
-		<None Include="frontend\tsconfig.config.json" />
-		<None Include="frontend\tsconfig.json" />
-		<None Include="Properties\PublishProfiles\web.pubxml.user" />
-		<None Include="wwwroot\assets\js\app.js" />
-		<None Include="wwwroot\assets\js\bootstrap.bundle.min.js" />
-		<None Include="wwwroot\assets\js\jquery-ui.min.js" />
-		<None Include="wwwroot\assets\js\jquery.core.js" />
-		<None Include="wwwroot\assets\js\jquery.min.js" />
-		<None Include="wwwroot\assets\js\jquery.slimscroll.min.js" />
-		<None Include="wwwroot\assets\js\metisMenu.min.js" />
-		<None Include="wwwroot\assets\js\waves.min.js" />
-		<None Include="wwwroot\images\clientlogo_astahealthcare.com_f1800.png" />
-		<None Include="wwwroot\images\icons-big.svg" />
-		<None Include="wwwroot\images\icons-small.svg" />
-		<None Include="wwwroot\images\loading.svg" />
-		<None Include="wwwroot\images\process.svg" />
-		<None Include="wwwroot\images\task.svg" />
-		<None Include="wwwroot\images\user.webp" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Middleware\" />
