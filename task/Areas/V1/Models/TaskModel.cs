@@ -13,16 +13,20 @@ namespace Vue.Models
         [ForeignKey("created_by")]
         public virtual UserModel? user_created { get; set; }
         [ForeignKey("statusId")]
-        public virtual TaskStatusModel? status { get; set; }
+        public virtual ProjectStatusModel? status { get; set; }
         public string name { get; set; }
         public string? description { get; set; }
         public int? parentId { get; set; }
         public string? priority { get; set; }
         public int? projectId { get; set; }
+        public string? rank { get; set; }
         public DateTime? startDate { get; set; }
         public DateTime? endDate { get; set; }
 
+        public DateTime? baselineStartDate { get; set; }
+        public DateTime? baselineEndDate { get; set; }
 
+        public virtual List<TaskAssigneeModel>? assignees { get; set; }
 
         public DateTime? created_at { get; set; }
         public DateTime? deleted_at { get; set; }

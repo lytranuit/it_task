@@ -11,5 +11,11 @@ namespace Vue.Models
         [Key]
         [Column(Order = 2)]
         public string userId { get; set; }
+
+
+        [ForeignKey("userId")]
+        public virtual UserModel user { get; set; }
+        [ForeignKey("taskId")]
+        public virtual TaskModel task { get; set; }
     }
 }

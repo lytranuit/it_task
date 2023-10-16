@@ -62,4 +62,3 @@ import "../src/assets/js/metisMenu.min.js";
 import "../src/assets/lib/deepmerge/jquery-extendext.js";
 import "../src/assets/lib/sortable/jquery.mjs.nestedSortable.js";
 import "../src/assets/lib/jquery-validation/dist/jquery.validate.js";
-import "../src/assets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js";

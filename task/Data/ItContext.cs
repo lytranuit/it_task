@@ -20,7 +20,7 @@ namespace Vue.Data
 
         }
 
-        public DbSet<TaskStatusModel> TaskStatusModel { get; set; }
+        public DbSet<ProjectStatusModel> ProjectStatusModel { get; set; }
         public DbSet<TaskModel> TaskModel { get; set; }
         public DbSet<TaskAssigneeModel> TaskAssigneeModel { get; set; }
         public DbSet<ProjectModel> ProjectModel { get; set; }

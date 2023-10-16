@@ -378,7 +378,7 @@ namespace it_template.Areas.V1.Controllers
         [HttpPost]
         public async Task<JsonResult> sync()
         {
-            var user_esign = _esignContext.UserEsignModel.Where(d => d.deleted_at == null && d.image_sign != "/private/images/tick.png").ToList();
+            var user_esign = _esignContext.UserEsignModel.Where(d => d.deleted_at == null).ToList();
 
             foreach (var user in user_esign)
             {

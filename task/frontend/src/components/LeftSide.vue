@@ -46,8 +46,7 @@ import { useProject } from "../stores/project";
 import { onMounted, ref } from "vue";
 import { useLayout } from "../layouts/composables/layout";
 import { storeToRefs } from "pinia";
-import { rand } from '../utilities/rand';
-import Api from '../api/Api';
+import projectApi from '../api/projectApi';
 
 
 const { initMetisMenu, initActiveMenu } = useLayout();
@@ -63,8 +62,9 @@ const reset = () => {
 onMounted(() => {
   initMetisMenu();
   initActiveMenu();
-  Api.GetListProject().then((data) => {
+  projectApi.GetList().then((data) => {
     projects.value = data;
   });
+  // store.fetchUsers();
 });
 </script>

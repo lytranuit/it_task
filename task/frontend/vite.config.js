@@ -14,7 +14,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      { find: '~@bryntum', replacement: '/node_modules/@bryntum' },
+      { find: '~@syncfusion', replacement: './node_modules/@syncfusion' },
       { find: '@', replacement: fileURLToPath(new URL("./src", import.meta.url)) }
     ]
   },

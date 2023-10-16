@@ -127,9 +127,7 @@
                   <td v-html="tr.version"></td>
                   <td v-html="tr.count"></td>
                   <td>
-                    <a href="#" @click="exportVersion(tr.id)"
-                      ><i class="fas fa-download"></i
-                    ></a>
+                    <a href="#" @click="exportVersion(tr.id)"><i class="fas fa-download"></i></a>
                   </td>
                 </tr>
               </tbody>
@@ -148,7 +146,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import Chart from "primevue/chart";
-import Loading from "../components/Loading.vue";
+import Loading from "../components/loading.vue";
 const execution_success = ref(0);
 const execution_fail = ref(0);
 const execution_amount = ref(0);
@@ -169,6 +167,6 @@ const chartData = ref({
 const datatableUser = ref([]);
 const datatableProcess = ref([]);
 onMounted(() => {
- 
+
 });
 </script>

@@ -21,6 +21,17 @@ namespace it_template.Areas.V1.Controllers
             _configuration = configuration;
             UserManager = UserMgr;
         }
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteProject(int projectId)
+        {
+            var project = _context.ProjectModel.Where(d => d.id == projectId).FirstOrDefault();
+            project.deleted_at = DateTime.Now;
+            _context.Update(project);
+            _context.SaveChanges();
+            return Json(project);
+        }
+        [HttpPost]
         public async Task<JsonResult> SaveProject(ProjectModel ProjectModel, List<string> list_assignee)
         {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
@@ -55,7 +66,8 @@ namespace it_template.Areas.V1.Controllers
         }
         public async Task<JsonResult> GetProject(int projectId)
         {
-            var project = _context.ProjectModel.Where(d => d.id == projectId).FirstOrDefault();
+            var project = _context.ProjectModel.Where(d => d.id == projectId && d.deleted_at == null).FirstOrDefault();
+
             return Json(project);
         }
 
