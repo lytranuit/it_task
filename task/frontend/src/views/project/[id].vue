@@ -29,9 +29,6 @@
       <TabPanel header="Board">
         <ProjectKanban></ProjectKanban>
       </TabPanel>
-      <TabPanel header="Calendar">
-        <ProjectCalendar></ProjectCalendar>
-      </TabPanel>
       <TabPanel header="Summary">
 
       </TabPanel>
