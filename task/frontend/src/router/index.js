@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import defaultLayout from "../layouts/Default.vue";
-import AdminLayout from "../layouts/Admin.vue";
+import AdminLayout from "../layouts/TaskLayout/index.vue";
 
 import routes from "~pages";
 import { i18n } from "../service/i18n";

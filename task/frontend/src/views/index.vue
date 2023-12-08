@@ -1,145 +1,31 @@
 <template>
   <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-3">
-      <div class="card report-card bg-purple-gradient shadow-purple">
-        <div class="card-body">
-          <div class="float-right">
-            <i class="dripicons-wallet report-main-icon bg-icon-purple"></i>
-          </div>
-          <span class="badge badge-light text-purple">Tổng số lượt chạy</span>
-          <h3 class="my-3">{{ execution_amount }}</h3>
-        </div>
-        <!--end card-body-->
-      </div>
-      <!--end card-->
-    </div>
-    <!--end col-->
-    <div class="col-md-6 col-lg-3">
-      <div class="card report-card bg-warning-gradient shadow-warning">
-        <div class="card-body">
-          <div class="float-right">
-            <i class="fas fa-spinner report-main-icon bg-icon-warning"></i>
-          </div>
-          <span class="badge badge-light text-warning">Đang thực hiện</span>
-          <h3 class="my-3">{{ execution_wait }}</h3>
-        </div>
-        <!--end card-body-->
-      </div>
-      <!--end card-->
-    </div>
-    <!--end col-->
-    <div class="col-md-6 col-lg-3">
-      <div class="card report-card bg-success-gradient shadow-success">
-        <div class="card-body">
-          <div class="float-right">
-            <i class="dripicons-checkmark report-main-icon bg-icon-success"></i>
-          </div>
-          <span class="badge badge-light text-success">Đã hoàn thành</span>
-          <h3 class="my-3">{{ execution_success }}</h3>
-        </div>
-        <!--end card-body-->
-      </div>
-      <!--end card-->
-    </div>
-    <!--end col-->
-
-    <div class="col-md-6 col-lg-3">
-      <div class="card report-card bg-danger-gradient shadow-danger">
-        <div class="card-body">
-          <div class="float-right">
-            <i class="fas fa-ban report-main-icon bg-icon-danger"></i>
-          </div>
-          <span class="badge badge-light text-danger">Đã thất bại</span>
-          <h3 class="my-3">{{ execution_fail }}</h3>
-        </div>
-        <!--end card-body-->
-      </div>
-      <!--end card-->
-    </div>
-    <!--end col-->
-
-    <div class="col-lg-6">
+    <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          <h4 class="header-title mt-0 mb-3">Lượt chạy tồn theo bộ phận</h4>
-          <div class="">
-            <Chart type="bar" :data="chartData" :options="chartOptions" />
-          </div>
-          <!--end /div-->
-        </div>
-        <!--end card-body-->
+          <h4 class="header-title mt-0 mb-3 d-flex align-items-center">
+            Việc tôi giao
+          </h4>
+          <Chart type="doughnut" v-bind="chart1" height="400" />
+        </div><!--end card-body-->
       </div>
-      <!--end card-->
+
     </div>
 
-    <div class="col-lg-6">
+    <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          <h4 class="header-title mt-0 mb-3">Lượt chạy tồn theo người</h4>
-          <div class="">
-            <table class="table mb-0" id="table_user">
-              <thead class="thead-light">
-                <tr>
-                  <th class="border-top-0">Họ và tên</th>
-                  <th class="border-top-0">Email</th>
-                  <th class="border-top-0">Số lượt</th>
-                </tr>
-                <!--end tr-->
-              </thead>
-              <tbody>
-                <tr v-for="tr of datatableUser">
-                  <td>
-                    <RouterLink :to="'/execution/wait?user_id=' + tr.user.id">
-                      {{ tr.user.fullName }}
-                    </RouterLink>
-                  </td>
-                  <td v-html="tr.user.email"></td>
-                  <td v-html="tr.count"></td>
-                </tr>
-              </tbody>
-            </table>
-            <!--end table-->
-          </div>
-          <!--end /div-->
-        </div>
-        <!--end card-body-->
+          <h4 class="header-title mt-0 mb-3 d-flex align-items-center">
+            Việc của tôi
+          </h4>
+          <Chart type="doughnut" v-bind="chart2" height="400" />
+        </div><!--end card-body-->
       </div>
-      <!--end card-->
     </div>
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="header-title mt-0 mb-3">Lượt chạy theo quy trình</h4>
-          <div class="">
-            <table class="table mb-0" id="table_process">
-              <thead class="thead-light">
-                <tr>
-                  <th class="border-top-0">Tên Quy trình</th>
-                  <th class="border-top-0">Version</th>
-                  <th class="border-top-0">Số lượt</th>
-                  <th class="border-top-0">Export</th>
-                </tr>
-                <!--end tr-->
-              </thead>
-              <tbody>
-                <tr v-for="tr of datatableProcess">
-                  <td v-html="tr.name"></td>
-                  <td v-html="tr.version"></td>
-                  <td v-html="tr.count"></td>
-                  <td>
-                    <a href="#" @click="exportVersion(tr.id)"><i class="fas fa-download"></i></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <!--end table-->
-          </div>
-          <!--end /div-->
-        </div>
-        <!--end card-body-->
-      </div>
-      <!--end card-->
+    <div class="col-12">
+      <TaskDatatable></TaskDatatable>
     </div>
+
   </div>
   <Loading :waiting="waiting"></Loading>
 </template>
@@ -147,23 +33,103 @@
 import { onMounted, ref } from "vue";
 import Chart from "primevue/chart";
 import Loading from "../components/loading.vue";
+import { labelCenter } from "../service/chartPlugin";
+import TaskDatatable from "../components/Datatable/TaskDatatable.vue";
 const execution_success = ref(0);
 const execution_fail = ref(0);
 const execution_amount = ref(0);
 const execution_wait = ref(0);
 const waiting = ref(false);
-const chartOptions = ref({
-  responsive: true,
-  plugins: {
-    legend: {
-      display: false,
-    },
+const chart1 = ref({
+  width: 500,
+  plugins: [labelCenter],
+  data: {
+    labels: ["Hoàn thành trước hạn", "Hoàn thành đúng hạn", "Hoàn thành trễ hạn", "Chưa hoàn thành", "Quá hạn"],
+    datasets: [
+      {
+        data: [30, 70, 0, 0, 0]
+      }
+    ],
   },
-});
-const chartData = ref({
-  labels: [],
-  datasets: [],
-});
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right'
+      },
+      tooltip: {
+        enabled: false
+      },
+
+      labelCenter: {
+        labels: [
+          {
+            text: "100",
+            font: {
+              size: 30,
+              unit: "em",
+              style: "bold"
+            }
+          },
+          {
+            text: `công việc`,
+            font: {
+              size: 25,
+              unit: "em",
+            }
+          }
+        ]
+      }
+    }
+  }
+})
+const chart2 = ref({
+  width: 500,
+  plugins: [labelCenter],
+  data: {
+    labels: ["Hoàn thành trước hạn", "Hoàn thành đúng hạn", "Hoàn thành trễ hạn", "Chưa hoàn thành", "Quá hạn"],
+    datasets: [
+      {
+        data: [30, 70, 0, 0, 0]
+      }
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right'
+      },
+      tooltip: {
+        enabled: false
+      },
+
+      labelCenter: {
+        labels: [
+          {
+            text: "100",
+            font: {
+              size: 30,
+              unit: "em",
+              style: "bold"
+            }
+          },
+          {
+            text: `công việc`,
+            font: {
+              size: 25,
+              unit: "em",
+            }
+          }
+        ]
+      }
+    }
+  }
+})
 const datatableUser = ref([]);
 const datatableProcess = ref([]);
 onMounted(() => {

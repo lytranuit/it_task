@@ -30,27 +30,41 @@
             </div>
         </div>
         <div class="mb-3 row">
+            <div class="col-12">
+                <a href="#" @click="is_hanhoanthanh = !is_hanhoanthanh" style="color: #039be5;"><i
+                        class="far fa-calendar-alt"></i> Hạn hoàn
+                    thành</a>
+            </div>
+        </div>
+        <div class="mb-3 row" v-show="is_hanhoanthanh">
             <div class="col-md-6">
                 <label for="startDate" class="form-label">Ngày bắt đầu</label>
                 <Calendar v-model="taskEdit.startDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false"
-                    showIcon showButtonBar/>
+                    showIcon showButtonBar />
             </div>
             <div class="col-md-6">
                 <label for="endDate" class="form-label">Ngày kết thúc</label>
-                <Calendar v-model="taskEdit.endDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false"
-                    showIcon showButtonBar/>
+                <Calendar v-model="taskEdit.endDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false" showIcon
+                    showButtonBar />
             </div>
         </div>
         <div class="mb-3 row">
+            <div class="col-12">
+                <a href="#" @click="is_kehoach = !is_kehoach" style="color: #039be5;"><i class="far fa-calendar"></i> Kế
+                    hoạch</a>
+            </div>
+
+        </div>
+        <div class="mb-3 row" v-show="is_kehoach">
             <div class="col-md-6">
                 <label for="baselineStartDate" class="form-label">Kế hoạch bắt đầu</label>
                 <Calendar v-model="taskEdit.baselineStartDate" dateFormat="yy-mm-dd" class="date-custom"
-                    :manualInput="false" showIcon showButtonBar/>
+                    :manualInput="false" showIcon showButtonBar />
             </div>
             <div class="col-md-6">
                 <label for="baselineEndDate" class="form-label">Kế hoạch kết thúc</label>
                 <Calendar v-model="taskEdit.baselineEndDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false"
-                    showIcon showButtonBar/>
+                    showIcon showButtonBar />
             </div>
         </div>
         <div class="text-center">
@@ -66,6 +80,11 @@ import { computed, onMounted, ref, watch } from "vue";
 import taskApi from '../../api/TaskApi';
 import { useProject } from "../../stores/project";
 import { storeToRefs } from 'pinia';
+import { kanbanData } from '../../datasource';
+
+import ConfirmDialog from 'primevue/confirmdialog';
+import { useConfirm } from "primevue/useconfirm";
+const confirm = useConfirm();
 const gantt = ref();
 
 const storeProject = useProject();
@@ -77,23 +96,52 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(["reset", "beforeSave", "save"]);
+const is_kehoach = ref(false);
+const is_hanhoanthanh = ref(false);
 const save = (e) => {
     e.preventDefault();
     if (!valid())
         return;
     emit("beforeSave");
     taskApi.Save(taskEdit.value).then((res) => {
-        taskEdit.value = {};
-        taskList.value.push(res);
+        if (taskEdit.value.id > 0) {
+            var find = taskList.value.findIndex((item) => {
+                return item.id == taskEdit.value.id;
+            });
 
-        if ($("#GanttContainer").length) {
-            var obj = document.getElementById("GanttContainer").ej2_instances[0];
-            obj.refresh();
+            taskList.value[find] = res;
+        } else {
+            taskList.value.push(res);
         }
+
+        taskEdit.value = {};
         emit("save");
     });
 }
+const deleteTask = (e) => {
+    e.preventDefault();
+    confirm.require({
+        message: 'Bạn có muốn xóa công việc này?',
+        header: 'Xóa công việc',
+        accept: () => {
+            emit("beforeSave");
+            taskApi.Delete(taskEdit.value.id).then((res) => {
 
+                var find = taskList.value.findIndex((item) => {
+                    return item.id == taskEdit.value.id;
+                });
+                taskList.value.splice(find, 1);
+                taskEdit.value = {};
+                emit("save");
+            });
+        },
+        acceptLabel: "Xác nhận",
+        acceptIcon: "pi pi-trash",
+        acceptClass: "p-button-danger",
+        rejectLabel: "Hủy",
+    });
+
+}
 const valid = () => {
     if (!$("#form-task").valid()) {
         return false;
@@ -101,11 +149,14 @@ const valid = () => {
     return true;
 }
 onMounted(() => {
-    console.log(gantt);
-    taskEdit.value.startDate = new Date();
-    taskEdit.value.priority = 1;
-    taskEdit.value.statusId = statusList.value[0].id;
-    taskEdit.value.projectId = props.projectId;
+    if (taskEdit.value.id > 0) {
+
+    } else {
+        taskEdit.value.startDate = new Date();
+        taskEdit.value.priority = 1;
+        taskEdit.value.statusId = statusList.value[0].id;
+        taskEdit.value.projectId = props.projectId;
+    }
     // console.log("mount");
     // console.log(data.value);
 })

@@ -49,7 +49,7 @@ namespace it_template.Areas.V1.Controllers
                     new ProjectStatusModel()
                     {
                         created_at = DateTime.Now,
-                        name= "To do",
+                        name= "Nhóm công việc 1",
                         color="#000000",
                         rank="i",
                         projectId = ProjectModel.id
@@ -57,7 +57,7 @@ namespace it_template.Areas.V1.Controllers
                     new ProjectStatusModel()
                     {
                         created_at = DateTime.Now,
-                        name= "Done",
+                        name= "Nhóm công việc 2",
                         color="#000000",
                         rank="j",
                         projectId = ProjectModel.id
@@ -100,7 +100,19 @@ namespace it_template.Areas.V1.Controllers
         }
         public async Task<JsonResult> GetList()
         {
-            var projects = _context.ProjectModel.Where(d => d.deleted_at == null).ToList();
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            var user = await UserManager.GetUserAsync(currentUser); // Get user
+            var is_admin = await UserManager.IsInRoleAsync(user, "Administrator");
+            List<ProjectModel>? projects = null;
+            if (!is_admin)
+            {
+                var list = _context.ProjectAssigneeModel.Where(d => d.userId == user.Id).Select(d => d.projectId).ToList();
+                projects = _context.ProjectModel.Where(d => d.deleted_at == null && (list.Contains(d.id) || d.created_by == user.Id)).ToList();
+            }
+            else
+            {
+                projects = _context.ProjectModel.Where(d => d.deleted_at == null).ToList();
+            }
             return Json(projects);
         }
         public async Task<JsonResult> Get(int id)

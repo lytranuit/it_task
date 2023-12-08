@@ -41,7 +41,7 @@
           </div>
         </template>
         <template #formTemplate="{ data }">
-          <FormTask :projectId="project.id" @beforeSave="hideTask">
+          <FormTask :projectId="project.id" @save="hideTask">
           </FormTask>
         </template>
       </EjsKanban>
@@ -101,10 +101,11 @@ import FormTask from "../Task/Form.vue";
 import Menu from 'primevue/menu';
 import { useRoute } from "vue-router";
 import TagHeader from "./TagHeader.vue";
+import { rand } from '../../utilities/rand';
 const confirm = useConfirm();
 const moveId = ref(0);
 const storeProject = useProject();
-const { statusList, taskList, project, taskEdit, statusEdit } = storeToRefs(storeProject);
+const { statusList, taskList, project, taskEdit, statusEdit, key } = storeToRefs(storeProject);
 const alert = (data) => {
   console.log(data)
 }
@@ -234,7 +235,6 @@ const toggle_menu = (event, id) => {
   menu.value.toggle(event);
 };
 const dialogOpen = (args) => {
-  console.log(args);
   var data = args.data;
   taskEdit.value = data;
   var element = args.element;
@@ -247,12 +247,13 @@ const headerFormTask = ref("Tạo mới");
 const hide = (e) => {
   visibleForm.value = false;
 }
+const saving = ref(false);
 const hideTask = (e) => {
-  kanban.value.ej2Instances.updateCard(taskEdit.value);
   kanban.value.ej2Instances.closeDialog();
+  key.value = rand();
 }
 const OnActionComplete = (e) => {
-  console.log(e);
+  // console.log(e);
   if (e.requestType == "cardChanged") {
     var data = e.changedRecords;
 
@@ -273,18 +274,18 @@ const route = useRoute();
 onMounted(() => {
   taskApi.GetList(route.params.id).then((res) => {
     taskList.value = res;
-    taskList.value = taskList.value.map((item1) => {
-      item1.list_assignee = item1.assignees.map((item) => {
-        return item.userId;
-      });
-      return item1;
-    });
+    // taskList.value = taskList.value.map((item1) => {
+    //   item1.list_assignee = item1.assignees.map((item) => {
+    //     return item.userId;
+    //   });
+    //   return item1;
+    // });
   });
 });
 </script>
 
 <style>
-@import '../../assets/lib/kanban/material3.css';
+@import '../../../node_modules/@syncfusion/ej2-vue-kanban/styles/material.css';
 
 .e-header-text {
   cursor: pointer;

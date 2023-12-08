@@ -12,14 +12,11 @@
       <div class="col-12">
         <h5>
           {{ project.name }}
-          <div v-if="project.created_by == user.id" class="d-inline-block">
-            <Avatar icon="pi pi-user-edit" style="cursor: pointer;" shape="circle" @click="toggle" />
-            <TieredMenu ref="menu" id="overlay_tmenu" :model="items" popup />
-          </div>
+          <Avatar icon="pi pi-user-edit" style="cursor: pointer;" shape="circle" @click="toggle" />
+          <TieredMenu ref="menu" id="overlay_tmenu" :model="items" popup />
           <Button label="Thêm công việc" icon="pi pi-plus" class="ml-3 float-right" size="small" severity="success"
-            @click="showAddTask()"></Button>
-          <Dialog v-if="visibleFormTask" v-model:visible="visibleFormTask" modal :header="headerFormTask"
-            :style="{ width: '50vw' }">
+            @click="visibleFormTask = true"></Button>
+          <Dialog v-model:visible="visibleFormTask" modal :header="headerFormTask" :style="{ width: '50vw' }">
             <FormTask @beforeSave="hide" :projectId="project.id"></FormTask>
           </Dialog>
         </h5>
@@ -33,6 +30,7 @@
         <ProjectKanban :key="key"></ProjectKanban>
       </TabPanel>
       <TabPanel header="Summary">
+
       </TabPanel>
     </TabView>
   </div>
@@ -62,9 +60,6 @@ import Form from '../../components/Project/Form.vue';
 import FormTask from '../../components/Task/Form.vue';
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
-import { useAuth } from "../../stores/auth";
-const store = useAuth();
-const { user } = storeToRefs(store);
 const confirm = useConfirm();
 const waiting = ref(false);
 const menu = ref();
@@ -72,7 +67,7 @@ const route = useRoute();
 const router = useRouter();
 const visible = ref(false);
 const storeProject = useProject();
-const { projects, project, headerFormTask, visibleFormTask, statusList, key, taskEdit } = storeToRefs(storeProject);
+const { projects, project, headerFormTask, visibleFormTask, statusList, key } = storeToRefs(storeProject);
 const items = ref([
 
   {
@@ -112,10 +107,7 @@ const items = ref([
     }
   }
 ]);
-const showAddTask = () => {
-  visibleFormTask.value = true;
-  taskEdit.value = {};
-}
+
 const hide = (e) => {
   visible.value = false;
   visibleFormTask.value = false;

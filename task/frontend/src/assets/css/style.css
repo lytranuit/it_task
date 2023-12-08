@@ -616,15 +616,13 @@ small {
 .page-content {
 	width: 100%;
 	position: relative;
-	min-height: calc(100vh - 70px);
+	min-height: calc(100vh);
 	padding: 20px 10px;
 }
 
 .left-sidenav {
-	min-width: 270px;
-	max-width: 270px;
 	background-color: #ffffff;
-	min-height: calc(100vh - 70px);
+	min-height: calc(100vh);
 	-webkit-box-shadow: 0 6px 20px rgba(36, 37, 38, 0.08);
 	box-shadow: 0 6px 20px rgba(36, 37, 38, 0.08);
 	-webkit-transition: .3s;
@@ -790,8 +788,6 @@ small {
 
 @media (max-width: 1024px) {
 	.left-sidenav {
-		position: fixed;
-		top: 70px;
 		overflow-y: auto;
 		z-index: 10;
 		bottom: 0;
@@ -8724,4 +8720,15 @@ body.dark-sidenav .left-sidenav .left-sidenav-menu li.mm-active>a i {
 
 .dx-overlay-wrapper {
 	z-index: 5000 !important;
+}
+._kqsw1n9t{
+	position: fixed;
+	right: 24px; bottom: 24px;
+}
+
+@media (max-width: 425px) {
+	._kqsw1n9t{
+		right: 0px; 
+		bottom: 0px;
+	}
 }

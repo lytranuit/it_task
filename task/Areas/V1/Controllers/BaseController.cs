@@ -5,8 +5,8 @@ using Vue.Data;
 namespace it_template.Areas.V1.Controllers
 {
     [Area("V1")]
-    //[Authorize(Roles = "Administrator")]
-    [Authorize]
+    [Authorize(Roles = "Administrator,User")]
+    //[Authorize]
     public class BaseController : Controller
     {
         protected readonly ItContext _context;

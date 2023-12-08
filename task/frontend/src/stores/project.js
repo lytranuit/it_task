@@ -10,6 +10,8 @@ export const useProject = defineStore("project", () => {
   const statusList = ref([]);
   const visibleFormTask = ref(false);
   const headerFormTask = ref("Công việc mới");
+  const visibleSidebar = ref(false);
+  const width = ref(500);
   const resetTask = () => {
     taskEdit.value = {};
   }
@@ -17,9 +19,10 @@ export const useProject = defineStore("project", () => {
     statusEdit.value = {};
   }
   const taskList = ref([]);
-  const ganttData = computed(() => {
-    return taskList.value;
-  })
+  // const ganttData = computed(() => {
+  //   return taskList.value;
+  // })
+  const key = ref("xcvsdf");
   return {
     project,
     projects,
@@ -27,9 +30,12 @@ export const useProject = defineStore("project", () => {
     visibleFormTask,
     headerFormTask,
     taskList,
-    ganttData,
+    visibleSidebar,
+    width,
+    // ganttData,
     statusList,
     statusEdit,
+    key,
     resetTask,
     resetStatus,
   };

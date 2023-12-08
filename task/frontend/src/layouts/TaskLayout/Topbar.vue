@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { useLayout } from "../layouts/composables/layout";
+import { useLayout } from "../composables/layout";
 import { useRouter } from "vue-router";
-import { useAuth } from "../stores/auth";
+import { useAuth } from "../../stores/auth";
 import TieredMenu from "primevue/tieredmenu";
 const store = useAuth();
 const user = store.user;
@@ -109,10 +109,10 @@ const toggle = (event) => {
     <router-link to="/" class="layout-topbar-logo justify-content-center">
       <span>
         <img
-          src="../assets/images/clientlogo_astahealthcare.com_f1800.png"
+          src="../../assets/images/clientlogo_astahealthcare.com_f1800.png"
           alt="logo-large"
           class="logo-lg logo-light"
-             width="200"
+             width="100"
         />
       </span>
     </router-link>
@@ -151,7 +151,7 @@ const toggle = (event) => {
         >
           English
           <img
-            src="../assets/images/us_flag.jpg"
+            src="../../assets/images/us_flag.jpg"
             class="ml-2"
             height="16"
             alt=""
@@ -169,7 +169,7 @@ const toggle = (event) => {
         >
           Tiếng việt
           <img
-            src="../assets/images/vi_flag.png"
+            src="../../assets/images/vi_flag.png"
             class="ml-2"
             height="16"
             alt=""
@@ -193,7 +193,7 @@ const toggle = (event) => {
             @click="changeLanguage('en')"
             ><span> English </span
             ><img
-              src="../assets/images/us_flag.jpg"
+              src="../../assets/images/us_flag.jpg"
               alt=""
               class="ml-2 float-right"
               height="14"
@@ -204,7 +204,7 @@ const toggle = (event) => {
             @click="changeLanguage('vi')"
             ><span> Tiếng Việt </span
             ><img
-              src="../assets/images/vi_flag.png"
+              src="../../assets/images/vi_flag.png"
               alt=""
               class="ml-2 float-right"
               height="14"

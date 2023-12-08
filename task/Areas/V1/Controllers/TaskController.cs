@@ -69,6 +69,7 @@ namespace it_template.Areas.V1.Controllers
                 TaskModel_old.statusId = TaskModel.statusId;
                 TaskModel_old.description = TaskModel.description;
                 TaskModel_old.priority = TaskModel.priority;
+                TaskModel_old.progress = TaskModel.progress;
 
                 TaskModel_old.startDate = TaskModel.startDate != null && TaskModel.startDate.Value.Kind == DateTimeKind.Utc ? TaskModel.startDate.Value.ToLocalTime() : TaskModel.startDate;
                 TaskModel_old.endDate = TaskModel.endDate != null && TaskModel.endDate.Value.Kind == DateTimeKind.Utc ? TaskModel.endDate.Value.ToLocalTime() : TaskModel.endDate;
@@ -96,22 +97,26 @@ namespace it_template.Areas.V1.Controllers
                 _context.SaveChanges();
 
             }
-            TaskModel_old.status = _context.ProjectStatusModel.Where(d => d.id == TaskModel_old.statusId).FirstOrDefault();
+            TaskModel_old = _context.TaskModel.Where(d => d.id == TaskModel_old.id)
+                .Include(d => d.status)
+                .Include(d => d.assignees)
+                .ThenInclude(d => d.user).FirstOrDefault();
             return Json(TaskModel_old);
         }
         public async Task<JsonResult> GetList(int projectId)
         {
-            var Tasks = _context.TaskModel.Where(d => d.projectId == projectId && d.deleted_at == null).Include(d => d.status).Include(d => d.assignees).ThenInclude(d => d.user).OrderBy(d => d.rank).ToList();
+            var Tasks = _context.TaskModel.Where(d => d.projectId == projectId && d.deleted_at == null).Include(d => d.attachments).Include(d => d.status).Include(d => d.assignees).ThenInclude(d => d.user).OrderBy(d => d.rank).ToList();
             return Json(Tasks);
         }
 
         public async Task<JsonResult> Get(int id)
         {
-            var Task = _context.TaskModel.Where(d => d.id == id && d.deleted_at == null).Include(d => d.status).Include(d => d.assignees).ThenInclude(d => d.user).FirstOrDefault();
+            var Task = _context.TaskModel.Where(d => d.id == id && d.deleted_at == null).Include(d => d.status).Include(d => d.assignees).ThenInclude(d => d.user).Include(d => d.attachments).FirstOrDefault();
 
             return Json(Task);
         }
 
+        
         public async Task<JsonResult> Rank(int id, int issueId, string type)
         {
             var Task = _context.TaskModel.Where(d => d.id == id && d.deleted_at == null).FirstOrDefault();
