@@ -32,6 +32,24 @@ export default {
       })
       .then((res) => res.data);
   },
+  AddComment(chat) {
+    return repository
+      .post(`/v1/${resoure}/AddComment`, chat, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => res.data);
+  },
+  morecomment(taskId, from_id) {
+    return repository
+      .get(`/v1/${resoure}/morecomment`, {
+        params: { taskId: taskId, from_id: from_id },
+      })
+      .then((res) => {  
+        return res.data
+      });
+  },
   GetList(projectId) {
     return repository
       .get(`/v1/${resoure}/GetList`, { params: { projectId: projectId } })

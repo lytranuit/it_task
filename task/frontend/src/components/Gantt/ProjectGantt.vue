@@ -1,5 +1,5 @@
 <template>
-  <EjsGantt ref='gantt' :dataSource="taskList" :treeColumnIndex='1' id="GanttContainer" :taskFields="taskFields"
+  <EjsGantt :key="key" ref='gantt' :dataSource="taskList" :treeColumnIndex='1' id="GanttContainer" :taskFields="taskFields"
     :editSettings="editSettings" :toolbar="toolbar" :allowSelection="true" :enableContextMenu="true"
     :contextMenuItems="contextMenuItems" :allowRowDragAndDrop="true" :actionComplete="actionComplete"
     :includeWeekend="true" :columns="columns" :splitterSettings="splitterSettings" :timelineSettings="timelineSettings"

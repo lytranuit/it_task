@@ -11,7 +11,7 @@ export const useProject = defineStore("project", () => {
   const visibleFormTask = ref(false);
   const headerFormTask = ref("Công việc mới");
   const visibleSidebar = ref(false);
-  const width = ref(500);
+  const width = ref(700);
   const resetTask = () => {
     taskEdit.value = {};
   }

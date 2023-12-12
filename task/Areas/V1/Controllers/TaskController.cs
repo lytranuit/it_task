@@ -116,7 +116,192 @@ namespace it_template.Areas.V1.Controllers
             return Json(Task);
         }
 
-        
+        // GET: Admin/Document/addComment
+        [HttpPost]
+        public async Task<IActionResult> AddComment(TaskCommentModel TaskCommentModel)
+        {
+           
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            string user_id = UserManager.GetUserId(currentUser); // Get user id:
+            var user = await UserManager.GetUserAsync(currentUser); // Get user id:
+            TaskCommentModel.user_id = user_id;
+            TaskCommentModel.created_at = DateTime.Now;
+            _context.Add(TaskCommentModel);
+            _context.SaveChanges();
+            var files = Request.Form.Files;
+
+            var items_comment = new List<TaskCommentFileModel>();
+            if (files != null && files.Count > 0)
+            {
+
+                foreach (var file in files)
+                {
+                    var timeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+                    string name = file.FileName;
+                    string ext = Path.GetExtension(name);
+                    string mimeType = file.ContentType;
+
+                    //var fileName = Path.GetFileName(name);
+                    var newName = timeStamp + " - " + name;
+
+                    newName = newName.Replace("+", "_");
+                    newName = newName.Replace("%", "_");
+                    var filePath = "private\\task\\" + TaskCommentModel.taskId + "\\" + newName;
+                    string url = "/private/task/" + TaskCommentModel.taskId + "/" + newName;
+                    items_comment.Add(new TaskCommentFileModel
+                    {
+                        ext = ext,
+                        url = url,
+                        name = name,
+                        mimeType = mimeType,
+                        taskCommentId = TaskCommentModel.id,
+                        created_at = DateTime.Now
+                    });
+
+                    using (var fileSrteam = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileSrteam);
+                    }
+                }
+                _context.AddRange(items_comment);
+                _context.SaveChanges();
+            }
+            ////
+            ///
+            //DocumentUserReadModel user_read = _context.DocumentUserReadModel.Where(d => d.document_id == DocumentCommentModel.document_id && d.user_id == DocumentCommentModel.user_id).FirstOrDefault();
+            //if (user_read == null)
+            //{
+            //    user_read = new DocumentUserReadModel
+            //    {
+            //        document_id = DocumentCommentModel.document_id,
+            //        user_id = DocumentCommentModel.user_id,
+            //        time_read = DateTime.Now,
+            //    };
+            //    _context.Add(user_read);
+            //}
+            //else
+            //{
+            //    user_read.time_read = DateTime.Now;
+            //    _context.Update(user_read);
+            //}
+
+            ///create unread
+
+            //var DocumentModel = _context.DocumentModel
+            //            .Where(d => d.id == DocumentCommentModel.document_id)
+            //            .Include(d => d.users_follow)
+            //            .Include(d => d.users_signature)
+            //            .Include(d => d.users_receive)
+            //            .FirstOrDefault();
+
+            //var users_follow = DocumentModel.users_follow.Select(a => a.user_id).ToList();
+            //var users_signature = DocumentModel.users_signature.Select(a => a.user_id).ToList();
+            //var users_representative = DocumentModel.users_signature.Where(a => a.representative_id != null).Select(a => a.representative_id).ToList();
+            //var users_receive = DocumentModel.users_receive.Select(a => a.user_id).ToList();
+            //List<string> users_related = new List<string>();
+            //users_related.AddRange(users_follow);
+            //users_related.AddRange(users_signature);
+            //users_related.AddRange(users_representative);
+            //users_related.AddRange(users_receive);
+            //users_related = users_related.Distinct().ToList();
+            //var itemToRemove = users_related.SingleOrDefault(r => r == user_id);
+            //users_related.Remove(itemToRemove);
+            //var items = new List<DocumentUserUnreadModel>();
+            //foreach (string u in users_related)
+            //{
+            //    items.Add(new DocumentUserUnreadModel
+            //    {
+            //        user_id = u,
+            //        document_id = DocumentModel.id,
+            //        time = DateTime.Now,
+            //    });
+            //}
+            //_context.AddRange(items);
+            ////SEND MAIL
+            //if (users_related != null)
+            //{
+            //    var users_related_obj = _context.UserModel.Where(d => users_related.Contains(d.Id)).Select(d => d.Email).ToList();
+            //    var mail_string = string.Join(",", users_related_obj.ToArray());
+            //    string Domain = (HttpContext.Request.IsHttps ? "https://" : "http://") + HttpContext.Request.Host.Value;
+            //    var attach = items_comment.Select(d => d.url).ToList();
+            //    var text = DocumentCommentModel.comment;
+            //    if (attach.Count() > 0 && DocumentCommentModel.comment == null)
+            //    {
+            //        text = $"{user.FullName} gửi đính kèm";
+            //    }
+            //    var body = _view.Render("Emails/NewComment",
+            //        new
+            //        {
+            //            link_logo = Domain + "/images/clientlogo_astahealthcare.com_f1800.png",
+            //            link = Domain + "/admin/document/details/" + DocumentModel.id,
+            //            text = text,
+            //            name = user.FullName
+            //        });
+
+
+            //    var email = new EmailModel
+            //    {
+            //        email_to = mail_string,
+            //        subject = "[Tin nhắn mới] " + DocumentModel.name_vi,
+            //        body = body,
+            //        email_type = "new_comment_document",
+            //        status = 1,
+            //        data_attachments = attach
+
+            //    };
+            //    _context.Add(email);
+            //}
+            ////await _context.SaveChangesAsync();
+
+            ///// Audittrail
+            //var audit = new AuditTrailsModel();
+            //audit.UserId = user.Id;
+            //audit.Type = AuditType.Update.ToString();
+            //audit.DateTime = DateTime.Now;
+            //audit.description = $"Tài khoản {user.FullName} đã thêm bình luận.";
+            //_context.Add(audit);
+            //await _context.SaveChangesAsync();
+
+            //DocumentCommentModel.user = await UserManager.GetUserAsync(currentUser);
+            //DocumentCommentModel.is_read = true;
+
+            return Json(new
+            {
+                success = 1,
+                comment = TaskCommentModel
+            });
+        }
+
+        public async Task<IActionResult> MoreComment(int taskId, int? from_id)
+        {
+            int limit = 10;
+            var comments_ctx = _context.TaskCommentModel
+                .Where(d => d.taskId == taskId);
+            if (from_id != null)
+            {
+                comments_ctx = comments_ctx.Where(d => d.id < from_id);
+            }
+            List<TaskCommentModel> comments = comments_ctx.OrderByDescending(d => d.id)
+                .Take(limit).Include(d => d.files).Include(d => d.user).ToList();
+            //System.Security.Claims.ClaimsPrincipal currentUser = User;
+            //string current_user_id = UserManager.GetUserId(currentUser); // Get user id:
+            //var user_read = _context.UserReadModel.Where(d => d.user_id == current_user_id && d.execution_id == execution_id).FirstOrDefault();
+            //DateTime? time_read = null;
+            //if (user_read != null)
+            //    time_read = user_read.time_read;
+
+            //foreach (var comment in comments)
+            //{
+            //    if (comment.user_id == current_user_id)
+            //    {
+            //        comment.is_read = true;
+            //        continue;
+            //    }
+            //    if (time_read != null && comment.created_at <= time_read)
+            //        comment.is_read = true;
+            //}
+            return Json(new { success = 1, comments });
+        }
         public async Task<JsonResult> Rank(int id, int issueId, string type)
         {
             var Task = _context.TaskModel.Where(d => d.id == id && d.deleted_at == null).FirstOrDefault();

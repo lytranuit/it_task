@@ -21,10 +21,10 @@
                     <div style="width: 200px;">
                         <div>
                             <div>Tiến độ công việc</div>
-                            <Slider v-model="taskEdit.progress" class="mt-3" />
+                            <Slider v-model="taskEdit.progress" class="mt-3" @slideend="save" />
                         </div>
                         <div class="mt-3 text-center">
-                            <InputText v-model.number="taskEdit.progress" style="width:50px;" />
+                            <InputText v-model.number="taskEdit.progress" style="width:50px;" @change="save" />
                         </div>
                     </div>
                 </OverlayPanel>
@@ -33,11 +33,11 @@
                 <div class="mb-3 row">
                     <div class="col-9">
                         <label for="name" class="form-label">Tên công việc <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name" required v-model="taskEdit.name">
+                        <input type="text" class="form-control" id="name" v-model="taskEdit.name" @change="save">
                     </div>
                     <div class="col-3">
                         <label for="priority" class="form-label">Độ ưu tiên</label>
-                        <select class="form-control" v-model="taskEdit.priority">
+                        <select class="form-control" v-model="taskEdit.priority" @change="save">
                             <option value="1">Bình thường</option>
                             <option value="2">Cao</option>
                             <option value="3">Ưu tiên</option>
@@ -48,8 +48,8 @@
                 <div class="mb-3 row">
                     <div class="col-12">
                         <label for="assignee" class="form-label">Người thực hiện</label>
-                        <UserTreeSelect name="createuser" :multiple="true" :required="true"
-                            v-model="taskEdit.list_assignee">
+                        <UserTreeSelect name="createuser" :multiple="true" :required="true" v-model="taskEdit.list_assignee"
+                            @update:modelValue="save">
                         </UserTreeSelect>
                     </div>
                 </div>
@@ -62,6 +62,12 @@
 
                 <div class="mb-3 row">
                     <div class="col-12">
+                        <label for="description" class="form-label">Mô tả</label>
+                        <textarea class="form-control" id="description" rows="4" v-model="taskEdit.description"></textarea>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-12">
                         <a href="#" @click="is_hanhoanthanh = !is_hanhoanthanh" style="color: #039be5;"><i
                                 class="far fa-calendar-alt"></i> Hạn hoàn
                             thành</a>
@@ -71,20 +77,19 @@
                     <div class="col-md-6">
                         <label for="startDate" class="form-label">Ngày bắt đầu</label>
                         <Calendar v-model="taskEdit.startDate" dateFormat="yy-mm-dd" class="date-custom"
-                            :manualInput="false" showIcon showButtonBar />
+                            :manualInput="false" showIcon showButtonBar @update:modelValue="save" />
                     </div>
                     <div class="col-md-6">
                         <label for="endDate" class="form-label">Ngày kết thúc</label>
                         <Calendar v-model="taskEdit.endDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false"
-                            showIcon showButtonBar />
+                            showIcon showButtonBar @update:modelValue="save" />
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <div class="col-12">
                         <a href="#" @click="is_kehoach = !is_kehoach" style="color: #039be5;"><i
-                                class="far fa-calendar"></i> Kế
-                            hoạch</a>
+                                class="far fa-calendar"></i> Kế hoạch</a>
                     </div>
 
                 </div>
@@ -92,37 +97,55 @@
                     <div class="col-md-6">
                         <label for="baselineStartDate" class="form-label">Kế hoạch bắt đầu</label>
                         <Calendar v-model="taskEdit.baselineStartDate" dateFormat="yy-mm-dd" class="date-custom"
-                            :manualInput="false" showIcon showButtonBar />
+                            :manualInput="false" showIcon showButtonBar @update:modelValue="save" />
                     </div>
                     <div class="col-md-6">
                         <label for="baselineEndDate" class="form-label">Kế hoạch kết thúc</label>
                         <Calendar v-model="taskEdit.baselineEndDate" dateFormat="yy-mm-dd" class="date-custom"
-                            :manualInput="false" showIcon showButtonBar />
+                            :manualInput="false" showIcon showButtonBar @update:modelValue="save" />
                     </div>
                 </div>
 
                 <div class="mb-3 row">
                     <div class="col-12">
                         <TabView>
-                            <TabPanel header="Bình luận">
-                                <div class="row">
-                                    <div class="col">
-                                        <Textarea v-model="chat" rows="2" cols="30"></Textarea>
+                            <TabPanel>
+                                <template #header>
+                                    <div class="d-flex align-items-center" style="gap: 5px;">
+                                        <span class="pi pi-comments"></span>
+                                        <span class="font-bold white-space-nowrap">Bình luận</span>
                                     </div>
+                                </template>
+                                <InputGroup>
+                                    <Textarea placeholder="Thêm bình luận ở đây" v-model="comment" rows="1"/>
+                                    <Button label="Đính kèm" icon="pi pi-file" size="small" severity="success" @click="AddComment"></Button>
+                                   
+
+                                    <Button label="Gửi" icon="pi pi-send" size="small" @click="AddComment"></Button>
+                                </InputGroup>
+                                <div class="row d-none">
                                     <div class="col">
-                                        <FileUpload name="attachments[]" url="/v1/task/fileupload"
-                                            @before-upload="onAdvancedUpload" :showUploadButton="false" mode="basic"
-                                            :showCancelButton="false" chooseLabel="Chọn" :multiple="true" :auto="true"
-                                            :maxFileSize="1000000" :pt="{ chooseButton: { class: 'p-button-sm' } }">
+                                        <Textarea v-model="comment" rows="2" cols="30" class="w-100"></Textarea>
+                                    </div>
+                                    <div class="d-inline-flex" style="gap:1rem; align-self: center;">
+                                        <FileUpload name="attachments[]" url="/v1/task/addcomment"
+                                            @before-upload="onAdvancedUpload" chooseIcon="pi pi-file" :multiple="true"
+                                            :auto="true" mode="basic" chooseLabel="Đính kèm" :maxFileSize="1000000"
+                                            :pt="{ chooseButton: { class: 'p-button-sm', style: 'line-height:initial' } }">
                                         </FileUpload>
-                                    </div>
-                                    <div class="col">
-                                        <Button label="Gửi" icon="pi pi-send" size="small"></Button>
+                                        <div>
+                                            <Button label="Gửi" icon="pi pi-send" size="small" @click="AddComment"></Button>
+                                        </div>
                                     </div>
                                 </div>
                             </TabPanel>
-                            <TabPanel header="Hoạt động">
-
+                            <TabPanel header="">
+                                <template #header>
+                                    <div class="d-flex align-items-center" style="gap: 5px;">
+                                        <span class="pi pi-forward "></span>
+                                        <span class="font-bold white-space-nowrap">Hoạt động</span>
+                                    </div>
+                                </template>
                             </TabPanel>
 
                         </TabView>
@@ -138,6 +161,7 @@
     </Sidebar>
 </template>
 <script setup>
+import InputGroup from 'primevue/inputgroup';
 import Textarea from 'primevue/textarea';
 import FileUpload from 'primevue/fileupload';
 import Slider from 'primevue/slider';
@@ -154,19 +178,20 @@ import taskApi from '../../api/TaskApi';
 import { useProject } from "../../stores/project";
 import { storeToRefs } from 'pinia';
 import { kanbanData } from '../../datasource';
+import { rand } from '../../utilities/rand';
 
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
 const confirm = useConfirm();
-const chat = ref();
+const comments = ref([]);
+const comment = ref();
 const storeProject = useProject();
-const { taskEdit, taskList, statusList, visibleSidebar, width } = storeToRefs(storeProject);
+const { taskEdit, taskList, statusList, visibleSidebar, width, key } = storeToRefs(storeProject);
 
 const emit = defineEmits(["reset", "beforeSave", "save"]);
 const is_kehoach = ref(false);
 const is_hanhoanthanh = ref(false);
-const save = (e) => {
-    e.preventDefault();
+const save = () => {
     if (!valid())
         return;
     emit("beforeSave");
@@ -175,15 +200,30 @@ const save = (e) => {
             var find = taskList.value.findIndex((item) => {
                 return item.id == taskEdit.value.id;
             });
-
+            console.log(find)
             taskList.value[find] = res;
+            console.log(taskList);
         } else {
             taskList.value.push(res);
         }
-
-        taskEdit.value = {};
+        key.value = rand();
+        // taskEdit.value = {};
         emit("save");
     });
+}
+const AddComment = () => {
+    if (comment.value == null || comment.value.trim() == "") {
+        alert("Chưa nhập nội dung bình luận!")
+        return false;
+    }
+    var formData = new FormData();
+    formData.append('taskId', taskEdit.value.id);
+    formData.append('comment', comment.value);
+    comment.value = "";
+    taskApi.AddComment(formData).then((res) => {
+
+    });
+    return true;
 }
 const op = ref();
 const toggle = (event) => {
@@ -200,7 +240,7 @@ const fullscreen = () => {
     width.value = screen.width;
 }
 const onAdvancedUpload = (e) => {
-    e.formData.append('projectId', taskEdit.value.projectId);
+    // e.formData.append('projectId', taskEdit.value.projectId);
     return e;
 }
 const deleteTask = (e) => {
@@ -228,13 +268,29 @@ const deleteTask = (e) => {
 
 }
 const valid = () => {
-    if (!$("#form-task").valid()) {
+    if (!taskEdit.value.name) {
         return false;
     }
     return true;
 }
+const getComments = async () => {
+    /// Lấy comments
+    var task_id = taskEdit.value.id;
+    var from_id;
+    if (comments.value.length > 0) {
+        from_id = comments[comments.length - 1].id;
+    }
+    var ress = await taskApi.morecomment(task_id, from_id);
+    var list_comments = ress.comments;
+    if (list_comments.length == 10) {
+        list_comments.pop();
+    }
+    comments.value = comments.value.concat(list_comments);
+}
 onMounted(() => {
+    getComments();
 })
+
 </script>
 
 <style scoped>

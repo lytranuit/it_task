@@ -27,7 +27,7 @@
     </div>
     <TabView lazy="">
       <TabPanel header="Timeline">
-        <ProjectGantt :key="key"></ProjectGantt>
+        <ProjectGantt></ProjectGantt>
       </TabPanel>
       <TabPanel header="Board">
         <ProjectKanban :key="key"></ProjectKanban>
