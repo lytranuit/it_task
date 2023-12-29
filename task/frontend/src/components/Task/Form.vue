@@ -2,11 +2,11 @@
 <template>
     <form id="form-task">
         <div class="mb-3 row">
-            <div class="col-9">
+            <div class="col-md-9">
                 <label for="name" class="form-label">Tên công việc <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="name" required v-model="taskEdit.name">
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <label for="priority" class="form-label">Độ ưu tiên</label>
                 <select class="form-control" v-model="taskEdit.priority">
                     <option value="1">Bình thường</option>
@@ -39,13 +39,13 @@
         <div class="mb-3 row" v-show="is_hanhoanthanh">
             <div class="col-md-6">
                 <label for="startDate" class="form-label">Ngày bắt đầu</label>
-                <Calendar v-model="taskEdit.startDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false"
-                    showIcon showButtonBar />
+                <Calendar v-model="taskEdit.startDate" dateFormat="yy-mm-dd" class="date-custom" showIcon showButtonBar
+                    :show-time="true" />
             </div>
             <div class="col-md-6">
                 <label for="endDate" class="form-label">Ngày kết thúc</label>
-                <Calendar v-model="taskEdit.endDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false" showIcon
-                    showButtonBar />
+                <Calendar v-model="taskEdit.endDate" dateFormat="yy-mm-dd" class="date-custom" showIcon showButtonBar
+                    :show-time="true" />
             </div>
         </div>
         <div class="mb-3 row">
@@ -58,13 +58,13 @@
         <div class="mb-3 row" v-show="is_kehoach">
             <div class="col-md-6">
                 <label for="baselineStartDate" class="form-label">Kế hoạch bắt đầu</label>
-                <Calendar v-model="taskEdit.baselineStartDate" dateFormat="yy-mm-dd" class="date-custom"
-                    :manualInput="false" showIcon showButtonBar />
+                <Calendar v-model="taskEdit.baselineStartDate" dateFormat="yy-mm-dd" class="date-custom" showIcon
+                    showButtonBar :show-time="true" />
             </div>
             <div class="col-md-6">
                 <label for="baselineEndDate" class="form-label">Kế hoạch kết thúc</label>
-                <Calendar v-model="taskEdit.baselineEndDate" dateFormat="yy-mm-dd" class="date-custom" :manualInput="false"
-                    showIcon showButtonBar />
+                <Calendar v-model="taskEdit.baselineEndDate" dateFormat="yy-mm-dd" class="date-custom" showIcon
+                    showButtonBar :show-time="true" />
             </div>
         </div>
         <div class="text-center">
@@ -84,11 +84,12 @@ import { kanbanData } from '../../datasource';
 
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
+import { rand } from '../../utilities/rand';
 const confirm = useConfirm();
 const gantt = ref();
 
 const storeProject = useProject();
-const { taskEdit, taskList, statusList } = storeToRefs(storeProject);
+const { taskEdit, taskList, statusList, key } = storeToRefs(storeProject);
 const props = defineProps({
     projectId: {
         type: Number,
@@ -113,7 +114,7 @@ const save = (e) => {
         } else {
             taskList.value.push(res);
         }
-
+        key.value = rand();
         taskEdit.value = {};
         emit("save");
     });

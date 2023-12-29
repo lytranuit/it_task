@@ -41,18 +41,47 @@ export default {
       })
       .then((res) => res.data);
   },
+
+  Favorite(params) {
+    return repository
+      .post(`/v1/${resoure}/Favorite`, params, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => res.data);
+  },
+
   morecomment(taskId, from_id) {
     return repository
       .get(`/v1/${resoure}/morecomment`, {
         params: { taskId: taskId, from_id: from_id },
       })
-      .then((res) => {  
+      .then((res) => {
+        return res.data
+      });
+  },
+  getEvents(taskId) {
+    return repository
+      .get(`/v1/${resoure}/getEvents`, {
+        params: { taskId: taskId },
+      })
+      .then((res) => {
         return res.data
       });
   },
   GetList(projectId) {
     return repository
       .get(`/v1/${resoure}/GetList`, { params: { projectId: projectId } })
+      .then((res) => res.data);
+  },
+  GetListbyFilter(params) {
+    return repository
+      .post(`/v1/${resoure}/GetListbyFilter`, params, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((res) => res.data);
   },
   Get(id) {

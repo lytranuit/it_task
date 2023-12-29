@@ -1,11 +1,12 @@
 <template>
-  <EjsGantt :key="key" ref='gantt' :dataSource="taskList" :treeColumnIndex='1' id="GanttContainer" :taskFields="taskFields"
-    :editSettings="editSettings" :toolbar="toolbar" :allowSelection="true" :enableContextMenu="true"
-    :contextMenuItems="contextMenuItems" :allowRowDragAndDrop="true" :actionComplete="actionComplete"
-    :includeWeekend="true" :columns="columns" :splitterSettings="splitterSettings" :timelineSettings="timelineSettings"
-    height="600px" :taskbarTemplate="'taskbarTemplate'" :labelSettings="labelSettings" :eventMarkers="eventMarkers"
-    :renderBaseline="true" rowHeight="50" :allowUnscheduledTasks='true' :enableImmutableMode="true"
-    :project-start-date="projectStartDate" :project-end-date="projectEndDate">
+  <EjsGantt :key="key" ref='gantt' :dataSource="taskList" :treeColumnIndex='1' id="GanttContainer"
+    :taskFields="taskFields" :editSettings="editSettings" :toolbar="toolbar" :allowSelection="true"
+    :enableContextMenu="true" :contextMenuItems="contextMenuItems" :allowRowDragAndDrop="true"
+    :actionComplete="actionComplete" :includeWeekend="true" :columns="columns" :splitterSettings="splitterSettings"
+    :timelineSettings="timelineSettings" height="600px" :taskbarTemplate="'taskbarTemplate'"
+    :labelSettings="labelSettings" :eventMarkers="eventMarkers" :renderBaseline="true" rowHeight="50"
+    :allowUnscheduledTasks='true' :enableImmutableMode="true" :project-start-date="projectStartDate"
+    :project-end-date="projectEndDate">
     <EjsGanttColumns>
       <EjsGanttColumn field='id' headerText='Task ID' textAlign='Left'>
 
@@ -44,7 +45,8 @@
     <template v-slot:listAssignTemplate="{ data }">
       <template v-if="data.taskData.assignees.length > 0">
         <AvatarGroup>
-          <Avatar v-for="item in data.taskData.assignees" :key="item.id" :image="item.user.image_url" :title="item.user.fullName" size="small" shape="circle" />
+          <Avatar v-for="item in data.taskData.assignees" :key="item.id" :image="item.user.image_url"
+            :title="item.user.fullName" size="small" shape="circle" />
           <!-- <Avatar label="+" shape="circle" size="small" /> -->
         </AvatarGroup>
       </template>
@@ -55,10 +57,22 @@
     </template>
     <template v-slot:stateTemplate="{ data }">
       <div class="d-flex">
-        <template v-if="data.progress == 0">
+        <template v-if="data.taskData.is_overdue && data.progress != 100">
+          <Knob valueColor='red' v-model="data.progress" valueTemplate="" :size="20" readonly />
+          <div class="align-self-center ml-2 text-danger">
+            Quá hạn
+          </div>
+        </template>
+        <template v-else-if="data.taskData.is_overdue && data.progress == 100">
+          <Knob valueColor='#e99905' v-model="data.progress" valueTemplate="" :size="20" readonly />
+          <div class="align-self-center ml-2">
+            Hoàn thành trễ hạn
+          </div>
+        </template>
+        <template v-else-if="data.progress == 0">
           <Knob v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2">
-            Chưa hoàn thành
+            Chưa thực hiện
           </div>
         </template>
         <template v-else-if="data.progress == 100">
@@ -69,7 +83,7 @@
 
         </template>
         <template v-else>
-          <Knob v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
+          <Knob v-model="data.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2">
             Hoàn thành <span>{{ data.progress }}%</span>
           </div>
@@ -86,9 +100,9 @@
     </span>
 
   </div>
-  <SidebarForm v-model:visible="visibleFormTask"></SidebarForm>
+  <SidebarForm v-model:visible="visibleFormTask" v-if="visibleFormTask"></SidebarForm>
 
-  <Dialog modal :style="{ width: '50vw' }">
+  <Dialog modal :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '95vw' }">
     <template #header>
       <span class="p-buttonset">
         <Button size="small" raised :outlined="taskEdit.progress < 100" @click="toggle"
@@ -226,7 +240,7 @@ const editSettings = ref({
   allowAdding: false,
   allowEditing: true,
   allowDeleting: true,
-  allowTaskbarEditing: true,
+  allowTaskbarEditing: false,
   showDeleteConfirmDialog: true,
   mode: "Dialog"
 });

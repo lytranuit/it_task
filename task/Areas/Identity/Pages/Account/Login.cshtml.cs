@@ -22,6 +22,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Vue.Data;
 using Vue.Services;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Diagnostics;
 
 namespace it.Areas.Identity.Pages.Account
 {
@@ -43,6 +45,8 @@ namespace it.Areas.Identity.Pages.Account
 			UserManager = UserMgr;
 			_configuration = configuration;
 			_LoginMailPyme = LoginMailPyme;
+			var listener = _context.GetService<DiagnosticSource>();
+			(listener as DiagnosticListener).SubscribeWithAdapter(new CommandInterceptor());
 		}
 
 		/// <summary>

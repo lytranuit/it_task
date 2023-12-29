@@ -49,7 +49,7 @@
     <div class="col-1">
       <Button icon="pi pi-plus" severity="success" outlined @click="visibleForm = true"></Button>
     </div>
-    <Dialog v-model:visible="visibleForm" modal :header="headerFormTask" :style="{ width: '50vw' }">
+    <Dialog v-model:visible="visibleForm" modal :header="headerFormTask" :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '95vw' }">
       <FormStatus @beforeSave="hide" :projectId="project.id">
       </FormStatus>
     </Dialog>

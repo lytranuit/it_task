@@ -12,8 +12,7 @@
             </div>
             <div class="mb-3 col-12">
                 <label for="assignee" class="form-label">Người tham gia</label>
-                <UserTreeSelect name="createuser" :multiple="true" :required="true" v-model="data.list_assignee"
-                    :append-to-body="false">
+                <UserTreeSelect name="createuser" :multiple="true" :required="true" v-model="data.list_assignee">
                 </UserTreeSelect>
             </div>
             <div class="col-12 text-center">

@@ -46,10 +46,6 @@ const user = store.user;
 							<router-link to="/member" class="dropdown-item">
 								<i class="dripicons-user text-muted mr-2"></i>Thông tin tài khoản
 							</router-link>
-							<router-link to="/member/changepassword" class="dropdown-item" href="">
-								<i class="dripicons-anchor text-muted mr-2"></i> Đổi mật khẩu
-							</router-link>
-
 							<div class="dropdown-divider"></div>
 							<form id="logoutForm" class="form-inline" action="/V1/Auth/Logout" method="post">
 								<a class="dropdown-item" style="cursor:pointer;" @click="store.logout()"><i

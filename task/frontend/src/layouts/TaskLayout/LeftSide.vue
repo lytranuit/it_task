@@ -1,10 +1,10 @@
 <template>
   <div class="left-sidenav">
     <ul class="metismenu left-sidenav-menu">
-      <li v-if="is_admin">
+      <li v-if="list_users.length > 0">
         <router-link class="nav-link" to="/admin">
-          <i class="fas fa-chart-bar"></i>
-          <span>Quản trị tổng quan</span>
+          <i class="fas fa-eye"></i>
+          <span>Quản trị</span>
         </router-link>
       </li>
       <li>
@@ -18,7 +18,7 @@
           <i class="fas fa-book-open"></i>
           <span>Dự án</span>
           <span class="menu-arrow"><i class="mdi mdi-chevron-right"></i></span>
-          <CreateProject v-if="is_admin"></CreateProject>
+          <CreateProject v-if="is_admin || is_manager"></CreateProject>
         </a>
         <ul class="nav-second-level" aria-expanded="false">
           <li class="nav-item" v-for="project in projects" :key="project.id">
@@ -68,7 +68,7 @@ import projectApi from '../../api/projectApi';
 const { initMetisMenu, initActiveMenu } = useLayout();
 const store = useAuth();
 const storeProject = useProject();
-const { is_admin } = storeToRefs(store);
+const { is_admin, list_users, is_manager } = storeToRefs(store);
 const { projects } = storeToRefs(storeProject);
 onMounted(() => {
   initMetisMenu();

@@ -14,11 +14,11 @@ const router = useRouter();
 
 onMounted(() => {
   bindOutsideClickListener();
-  var is_first = localStorage.getItem("is_first") || 0;
-  if (!is_first) {
-    localStorage.setItem("is_first", 1);
-    router.push("/member/changepassword");
-  }
+  // var is_first = localStorage.getItem("is_first") || 0;
+  // if (!is_first) {
+  //   localStorage.setItem("is_first", 1);
+  //   router.push("/member/changepassword");
+  // }
 });
 
 onBeforeUnmount(() => {
@@ -76,11 +76,6 @@ const items = ref([
     label: "Thông tin tài khoản",
     icon: "pi pi-fw pi-user text-muted ",
     to: "/member",
-  },
-  {
-    label: "Đổi mật khẩu",
-    icon: "dripicons-anchor text-muted",
-    to: "/member/changepassword",
   },
   {
     separator: true,

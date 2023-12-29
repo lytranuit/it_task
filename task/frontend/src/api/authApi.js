@@ -10,4 +10,8 @@ export default {
       .get(`/v1/${resoure}/TokenInfo?token=${token}`)
       .then((res) => res.data);
   },
+
+  users() {
+    return repository.get(`/v1/${resoure}/users`).then((res) => res.data);
+  },
 };

@@ -4,7 +4,8 @@
 
     <Loading :waiting="waiting"></Loading>
     <Teleport to="body">
-      <Dialog v-model:visible="visible" modal header="Cập nhật" :style="{ width: '50vw' }">
+      <Dialog v-model:visible="visible" modal header="Cập nhật" :style="{ width: '50vw' }"
+        :breakpoints="{ '1199px': '75vw', '575px': '95vw' }">
         <Form @beforeSave="hide" :value="project"></Form>
       </Dialog>
     </Teleport>
@@ -16,7 +17,8 @@
           <TieredMenu ref="menu" id="overlay_tmenu" :model="items" popup />
           <Button label="Thêm công việc" icon="pi pi-plus" class="ml-3 float-right" size="small" severity="success"
             @click="visibleFormTask = true"></Button>
-          <Dialog v-model:visible="visibleFormTask" modal :header="headerFormTask" :style="{ width: '50vw' }">
+          <Dialog v-model:visible="visibleFormTask" modal :header="headerFormTask" :style="{ width: '50vw' }"
+            :breakpoints="{ '1199px': '75vw', '575px': '95vw' }">
             <FormTask @beforeSave="hide" :projectId="project.id"></FormTask>
           </Dialog>
         </h5>

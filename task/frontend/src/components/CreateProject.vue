@@ -1,7 +1,8 @@
 
 <template>
     <span class="float-right" @click.stop="show($event)"><i class="fas fa-plus-circle"></i></span>
-    <Dialog v-model:visible="visible" modal header="Dự án mới" :style="{ width: '50vw' }">
+    <Dialog v-model:visible="visible" modal header="Dự án mới" style="width: 50vw;"
+        :breakpoints="{ '1199px': '75vw', '575px': '95vw' }">
         <Form @beforeSave="hide" :value="data"></Form>
     </Dialog>
 </template>
