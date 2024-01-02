@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Diagnostics;
 
 namespace it_template.Areas.V1.Controllers
 {
@@ -26,7 +28,10 @@ namespace it_template.Areas.V1.Controllers
 			_configuration = configuration;
 			_signInManager = signInManager;
 			_context = context;
-		}
+
+            var listener = _context.GetService<DiagnosticSource>();
+            (listener as DiagnosticListener).SubscribeWithAdapter(new CommandInterceptor());
+        }
 		public class InputModel
 		{
 			/// <summary>

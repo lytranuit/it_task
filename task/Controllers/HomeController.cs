@@ -5,6 +5,8 @@ using Vue.Data;
 using System.Net.Mail;
 using Vue.Services;
 using System.Net.Mime;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Diagnostics;
 
 namespace Vue.Controllers
 {
@@ -19,7 +21,9 @@ namespace Vue.Controllers
 		{
 			_context = context;
 			_view = view;
-		}
+            var listener = _context.GetService<DiagnosticSource>();
+            (listener as DiagnosticListener).SubscribeWithAdapter(new CommandInterceptor());
+        }
 
 		public JsonResult Index()
 		{
