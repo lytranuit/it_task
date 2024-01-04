@@ -43,7 +43,8 @@
                 <div class="form-group row">
                   <b class="col-12 col-lg-2 col-form-label">Quản lý:</b>
                   <div class="col-lg-10 pt-1">
-                    <UserTreeSelect v-model="data.list_users" multiple name="list_users[]"></UserTreeSelect>
+                    <UserDepartmentTreeSelect v-model="data.list_users" multiple name="list_users[]">
+                    </UserDepartmentTreeSelect>
                   </div>
                 </div>
               </div>
@@ -133,7 +134,7 @@ import { useRoute } from "vue-router";
 import userApi from "../../../api/userApi";
 import ImageManager from "../../../components/ImageManager.vue";
 import RoleTreeSelect from "../../../components/TreeSelect/RoleTreeSelect.vue";
-import UserTreeSelect from "../../../components/TreeSelect/UserTreeSelect.vue";
+import UserDepartmentTreeSelect from "../../../components/TreeSelect/UserDepartmentTreeSelect.vue";
 const route = useRoute();
 const messageError = ref();
 const messageSuccess = ref();

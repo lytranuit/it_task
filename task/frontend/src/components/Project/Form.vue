@@ -12,8 +12,9 @@
             </div>
             <div class="mb-3 col-12">
                 <label for="assignee" class="form-label">Người tham gia</label>
-                <UserTreeSelect name="createuser" :multiple="true" :required="true" v-model="data.list_assignee">
-                </UserTreeSelect>
+                <UserDepartmentTreeSelect name="createuser" :multiple="true" :required="true" v-model="data.list_assignee"
+                    zIndex="3000">
+                </UserDepartmentTreeSelect>
             </div>
             <div class="col-12 text-center">
                 <Button type="submit" label="Lưu lại" icon="pi pi-save" size="small" @click="saveProject" />
@@ -23,7 +24,7 @@
 </template>
 <script setup>
 import Button from 'primevue/button';
-import UserTreeSelect from '../TreeSelect/UserTreeSelect.vue';
+import UserDepartmentTreeSelect from '../TreeSelect/UserDepartmentTreeSelect.vue';
 import { computed, onMounted, ref } from "vue";
 import projectApi from '../../api/projectApi';
 import { useProject } from "../../stores/project";

@@ -117,4 +117,8 @@ export default {
     }
     ).then((res) => res.data);
   },
+
+  departments() {
+    return repository.get(`/v1/${resoure}/departments`).then((res) => res.data);
+  },
 };

@@ -10,6 +10,7 @@ using workflow.Areas.V1.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DiagnosticAdapter;
 using System.Data.Common;
+using workflow.Models;
 
 namespace Vue.Data
 {
@@ -43,6 +44,8 @@ namespace Vue.Data
         public DbSet<EmailModel> EmailModel { get; set; }
         public DbSet<TokenModel> TokenModel { get; set; }
         public DbSet<UserManagerModel> UserManagerModel { get; set; }
+        public DbSet<DepartmentModel> DepartmentModel { get; set; }
+        public DbSet<UserDepartmentModel> UserDepartmentModel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -163,7 +166,7 @@ namespace Vue.Data
             var schemaName = "dbo";
             var list_talbe = new List<string>()
             {
-                "AspNetUsers","AspNetUserRoles","emails","Token","user_manager"
+                "AspNetUsers","AspNetUserRoles","emails","Token","user_manager","department","user_department"
             };
             //var tableName = "AspNetUsers";
             foreach (var tableName in list_talbe)

@@ -5,11 +5,13 @@ import { defineStore } from "pinia";
 import { useCookies } from "vue3-cookies";
 import authApi from "../api/authApi";
 import userApi from "../api/userApi";
+import Api from "../api/Api";
 export const useAuth = defineStore("auth", () => {
     const data = ref({});
     const users = ref([]);
     const roles = ref([]);
     const departments = ref([]);
+    const userdepartments = ref([]);
     const isAuth = computed(() => {
         const { cookies } = useCookies();
         const Token = cookies.get("Auth-Token");
@@ -66,6 +68,13 @@ export const useAuth = defineStore("auth", () => {
             return response;
         });
     }
+    async function fetchUserDepartment() {
+        if (userdepartments.value.length) return;
+        return Api.departments().then((response) => {
+            userdepartments.value = response;
+            return response;
+        });
+    }
     async function fetchUsers() {
         if (users.value.length) return;
         return authApi.users().then((response) => {
@@ -97,6 +106,7 @@ export const useAuth = defineStore("auth", () => {
         roles,
         users,
         departments,
+        userdepartments,
         isAuth,
         user,
         is_admin,
@@ -106,6 +116,7 @@ export const useAuth = defineStore("auth", () => {
         logout,
         fetchRoles,
         fetchDepartment,
+        fetchUserDepartment,
         fetchUsers,
         fetchData,
     };
