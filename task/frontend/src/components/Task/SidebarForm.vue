@@ -412,7 +412,10 @@ const checkPermissionPoint = (list_assignee) => {
         return true;
     if (!is_manager.value)
         return false;
-    if (sameMembers(list_assignee, list_users.value))
+    let list = list_users.value.map((item)=>{
+        return item.userManagerId;
+    })
+    if (sameMembers(list_assignee,list))
         return true;
     return false;
 

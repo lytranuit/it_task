@@ -65,6 +65,6 @@ const update = (value) => {
   emit('update:modelValue', value)
 }
 onMounted(() => {
-  console.log(list_users.value);
+  // console.log(list_users.value);
 });
 </script>

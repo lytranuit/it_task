@@ -1,6 +1,6 @@
 <template>
   <TreeSelect :options="users" :multiple="multiple" :normalizer="normalizer" :modelValue="modelValue" :name="name"
-    :required="required" :append-to-body="appendToBody" @update:modelValue="emit('update:modelValue', $event)" zIndex="3000">
+    :required="required" :append-to-body="appendToBody" @update:modelValue="emit('update:modelValue', $event)" zIndex="3000" >
   </TreeSelect>
 </template>
 
@@ -39,7 +39,7 @@ const normalizer = (node) => {
   }
 }
 onMounted(() => {
-
+  console.log(1);
   store.fetchUsers().then(() => {
   });
 });

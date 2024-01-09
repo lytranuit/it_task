@@ -1,6 +1,6 @@
 <template>
   <TreeSelect :options="userdepartments" :multiple="multiple" :modelValue="modelValue" :flat="flat" :name="name"
-    :required="required" :value-consists-of="valueConsistsOf" :append-to-body="true" @update:modelValue="update">
+    :required="required" :value-consists-of="valueConsistsOf" :append-to-body="true" @update:modelValue="update" :disable-fuzzy-matching="true">
   </TreeSelect>
 </template>
 
