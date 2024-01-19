@@ -57,7 +57,7 @@ namespace Vue
              options.UseSqlServer(EsignConnectionString)
              );
 
-            //builder.Services.AddScoped<ViewRender, ViewRender>();
+            builder.Services.AddScoped<ViewRender, ViewRender>();
 
             builder.Services.AddScoped<LoginMailPyme, LoginMailPyme>();
 

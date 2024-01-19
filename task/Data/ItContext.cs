@@ -83,6 +83,10 @@ namespace Vue.Data
             OnBeforeSaveChanges();
             return base.SaveChanges();
         }
+        public int Save()
+        {
+            return base.SaveChanges();
+        }
         private void OnBeforeSaveChanges()
         {
             ChangeTracker.DetectChanges();
