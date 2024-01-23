@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -93,9 +94,10 @@ namespace it_template.Areas.V1.Controllers
             var task = _context.TaskModel.Where(d => d.created_by == user_id && d.deleted_at == null).ToList();
 
 
+
             var count = task.Count();
-            var count_truoc_han = task.Where(d => d.finished_at != null && d.startDate > d.finished_at).Count();
-            var count_dung_han = task.Where(d => d.finished_at != null && d.startDate <= d.finished_at && d.endDate >= d.finished_at).Count();
+            var count_truoc_han = task.Where(d => d.finished_at != null && d.endDate != null && d.endDate.Value.AddDays(-1) > d.finished_at).Count();
+            var count_dung_han = task.Where(d => d.finished_at != null && d.endDate != null && d.endDate.Value.AddDays(-1) < d.finished_at && d.endDate > d.finished_at).Count();
             var count_tre_han = task.Where(d => d.finished_at != null && d.endDate < d.finished_at).Count();
             var count_chua_ht = task.Where(d => d.finished_at == null && d.startDate <= DateTime.Now && d.endDate >= DateTime.Now).Count();
             var count_qua_han = task.Where(d => d.finished_at == null && d.endDate < DateTime.Now).Count();
@@ -103,9 +105,15 @@ namespace it_template.Areas.V1.Controllers
             var data = new
             {
                 labels = new List<string>() { "Hoàn thành trước hạn", "Hoàn thành đúng hạn", "Hoàn thành trễ hạn", "Chưa hoàn thành", "Quá hạn" },
-                datasets = new List<Chart>() { new Chart { label = "Công việc", data = new List<int>() { count_truoc_han, count_dung_han, count_tre_han, count_chua_ht, count_qua_han } } }
-            };
+                datasets = new List<Chart>() {
+                    new Chart {
+                        label = "Công việc",
+                        data = new List<int>() { count_truoc_han, count_dung_han, count_tre_han, count_chua_ht, count_qua_han },
+                        backgroundColor = new List<string>() { "#00af50", "#92d14f", "#01b0f1", "#e8e833", "#ed7d31" }
+                    }
+                }
 
+            };
             return Json(new { count = count, data = data });
         }
 
@@ -119,8 +127,8 @@ namespace it_template.Areas.V1.Controllers
 
 
             var count = task.Count();
-            var count_truoc_han = task.Where(d => d.finished_at != null && d.startDate > d.finished_at).Count();
-            var count_dung_han = task.Where(d => d.finished_at != null && d.startDate <= d.finished_at && d.endDate >= d.finished_at).Count();
+            var count_truoc_han = task.Where(d => d.finished_at != null && d.endDate != null && d.endDate.Value.AddDays(-1) > d.finished_at).Count();
+            var count_dung_han = task.Where(d => d.finished_at != null && d.endDate != null && d.endDate.Value.AddDays(-1) < d.finished_at && d.endDate > d.finished_at).Count();
             var count_tre_han = task.Where(d => d.finished_at != null && d.endDate < d.finished_at).Count();
             var count_chua_ht = task.Where(d => d.finished_at == null && d.startDate <= DateTime.Now && d.endDate >= DateTime.Now).Count();
             var count_qua_han = task.Where(d => d.finished_at == null && d.endDate < DateTime.Now).Count();
@@ -128,8 +136,14 @@ namespace it_template.Areas.V1.Controllers
             var data = new
             {
                 labels = new List<string>() { "Hoàn thành trước hạn", "Hoàn thành đúng hạn", "Hoàn thành trễ hạn", "Chưa hoàn thành", "Quá hạn" },
-                datasets = new List<Chart>() { new Chart { label="Công việc", data = new List<int>() { count_truoc_han, count_dung_han, count_tre_han, count_chua_ht, count_qua_han } }
-    }
+                datasets = new List<Chart>() {
+                    new Chart {
+                        label = "Công việc",
+                        data = new List<int>() { count_truoc_han, count_dung_han, count_tre_han, count_chua_ht, count_qua_han },
+                        backgroundColor = new List<string>() { "#00af50", "#92d14f", "#01b0f1", "#e8e833", "#ed7d31" }
+                    }
+                }
+
             };
 
             return Json(new { count = count, data = data });
@@ -244,7 +258,7 @@ namespace it_template.Areas.V1.Controllers
                 }
             }
             //var dulieu = tmp.ToList();
-            var data = new { labels = labels, datasets = new List<Chart>() { new Chart { label = "Hoàn thành", data = dataHoanthanh, fill = true }, new Chart { label = "Tổng công việc", data = dataTong, fill = true } } };
+            var data = new { labels = labels, datasets = new List<Chart>() { new Chart { label = "Hoàn thành", data = dataHoanthanh, fill = true, backgroundColor = new List<string>() { "#28aa37" } }, new Chart { label = "Tổng công việc", data = dataTong, fill = true, backgroundColor = new List<string>() { "blue" } } } };
 
             return Json(new
             {
@@ -293,10 +307,10 @@ namespace it_template.Areas.V1.Controllers
             {
                 label = d.Key.FullName,
                 count = d.Count(),
-                truocHan = d.Where(d => d.task.finished_at != null && d.task.startDate > d.task.finished_at).Count(),
-                list_truocHan = d.Where(d => d.task.finished_at != null && d.task.startDate > d.task.finished_at).Select(d => d.task.id).ToList(),
+                truocHan = d.Where(d => d.task.finished_at != null && d.task.endDate != null && d.task.endDate.Value.AddDays(-1) > d.task.finished_at).Count(),
+                list_truocHan = d.Where(d => d.task.finished_at != null && d.task.endDate != null && d.task.endDate.Value.AddDays(-1) > d.task.finished_at).Select(d => d.task.id).ToList(),
 
-                dungHan = d.Where(d => d.task.finished_at != null && d.task.startDate <= d.task.finished_at && d.task.endDate >= d.task.finished_at).Count(),
+                dungHan = d.Where(d => d.task.finished_at != null && d.task.endDate != null && d.task.endDate.Value.AddDays(-1) < d.task.finished_at && d.task.endDate > d.task.finished_at).Count(),
                 list_dungHan = d.Where(d => d.task.finished_at != null && d.task.startDate <= d.task.finished_at && d.task.endDate >= d.task.finished_at).Select(d => d.task.id).ToList(),
 
                 treHan = d.Where(d => d.task.finished_at != null && d.task.endDate < d.task.finished_at).Count(),
@@ -308,15 +322,29 @@ namespace it_template.Areas.V1.Controllers
                 quaHan = d.Where(d => d.task.finished_at == null && d.task.endDate < DateTime.Now).Count(),
                 list_quaHan = d.Where(d => d.task.finished_at == null && d.task.endDate < DateTime.Now).Select(d => d.task.id).ToList()
             }).OrderByDescending(d => d.count);
+
+
+            //var data = new
+            //{
+            //    labels = new List<string>() { "Hoàn thành trước hạn", "Hoàn thành đúng hạn", "Hoàn thành trễ hạn", "Chưa hoàn thành", "Quá hạn" },
+            //    datasets = new List<Chart>() {
+            //        new Chart {
+            //            label = "Công việc",
+            //            data = new List<int>() { count_truoc_han, count_dung_han, count_tre_han, count_chua_ht, count_qua_han },
+            //            backgroundColor = new List<string>() { "#00af50", "#92d14f", "#01b0f1", "#e8e833", "#ed7d31" }
+            //        }
+            //    }
+
+            //};
             var data = new
             {
                 labels = group.Select(d => d.label).ToList(),
                 datasets = new List<Chart>() {
-                new Chart { label = "Hoàn thành trước hạn", data = group.Select(d => d.truocHan).ToList() } ,
-                new Chart { label = "Hoàn thành đúng hạn", data = group.Select(d => d.dungHan).ToList() } ,
-                new Chart { label = "Hoàn thành trễ hạn", data = group.Select(d => d.treHan).ToList() } ,
-                new Chart { label = "Chưa hoàn thành", data = group.Select(d => d.chuaHt).ToList() } ,
-                new Chart { label = "Quá hạn", data = group.Select(d => d.quaHan).ToList() } ,
+                new Chart { label = "Hoàn thành trước hạn", data = group.Select(d => d.truocHan).ToList(),backgroundColor = new List<string>(){ "#00af50" } } ,
+                new Chart { label = "Hoàn thành đúng hạn", data = group.Select(d => d.dungHan).ToList(),backgroundColor = new List<string>(){ "#92d14f" } } ,
+                new Chart { label = "Hoàn thành trễ hạn", data = group.Select(d => d.treHan).ToList(),backgroundColor = new List<string>(){ "#01b0f1" } } ,
+                new Chart { label = "Chưa hoàn thành", data = group.Select(d => d.chuaHt).ToList(),backgroundColor = new List<string>(){ "#e8e833" } } ,
+                new Chart { label = "Quá hạn", data = group.Select(d => d.quaHan).ToList(),backgroundColor = new List<string>(){ "#ed7d31" } } ,
             }
             };
 
@@ -440,5 +468,6 @@ namespace it_template.Areas.V1.Controllers
         public List<int> data { get; set; }
 
         public bool? fill { get; set; }
+        public List<string>? backgroundColor { get; set; }
     }
 }

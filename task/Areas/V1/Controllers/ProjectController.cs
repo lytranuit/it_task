@@ -50,7 +50,7 @@ namespace it_template.Areas.V1.Controllers
                     {
                         created_at = DateTime.Now,
                         name= "Nhóm công việc 1",
-                        color="#000000",
+                        color="#2563eb",
                         rank="i",
                         projectId = ProjectModel.id
                     },
@@ -58,7 +58,7 @@ namespace it_template.Areas.V1.Controllers
                     {
                         created_at = DateTime.Now,
                         name= "Nhóm công việc 2",
-                        color="#000000",
+                        color="#22C55E",
                         rank="j",
                         projectId = ProjectModel.id
                     }

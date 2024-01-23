@@ -83,14 +83,14 @@
                 <template v-slot:stateTemplate="{ data }">
                     <div class="d-flex">
                         <template v-if="data.taskData.is_overdue && data.progress != 100">
-                            <Knob valueColor='red' v-model="data.progress" valueTemplate="" :size="20" readonly />
-                            <div class="align-self-center ml-2 text-danger">
+                            <Knob valueColor='#ed7d31' v-model="data.progress" valueTemplate="" :size="20" readonly />
+                            <div class="align-self-center ml-2" style="color:#ed7d31">
                                 Quá hạn
                             </div>
                         </template>
                         <template v-else-if="data.taskData.is_overdue && data.progress == 100">
-                            <Knob valueColor='#e99905' v-model="data.progress" valueTemplate="" :size="20" readonly />
-                            <div class="align-self-center ml-2">
+                            <Knob valueColor='#01b0f1' v-model="data.progress" valueTemplate="" :size="20" readonly />
+                            <div class="align-self-center ml-2" style="color:#01b0f1">
                                 Hoàn thành trễ hạn
                             </div>
                         </template>
@@ -109,7 +109,7 @@
 
                         </template>
                         <template v-else>
-                            <Knob v-model="data.progress" valueTemplate="" :size="20" readonly />
+                            <Knob valueColor='#28aa37' v-model="data.progress" valueTemplate="" :size="20" readonly />
                             <div class="align-self-center ml-2">
                                 Hoàn thành <span>{{ data.progress }}%</span>
                             </div>

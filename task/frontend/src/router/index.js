@@ -29,7 +29,7 @@ window.addEventListener('popstate', () => {
 router.beforeEach((toRoute, fromRoute, next) => {
   i18n.global.locale.value = localStorage.getItem("language") || "vi";
   const title =
-    toRoute.meta && toRoute.meta.title ? toRoute.meta.title : "AstaCorp";
+    toRoute.meta && toRoute.meta.title ? toRoute.meta.title : "Công việc";
   document.title = title;
   const IsItABackButton = window.popStateDetected
   window.popStateDetected = false
