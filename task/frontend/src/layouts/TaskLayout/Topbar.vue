@@ -111,28 +111,43 @@ const toggle = (event) => {
       <i class="pi pi-bars"></i>
     </button>
     <div class="d-none d-xl-block">
-      <div class="soft">
-        <a href="https://esign.astahealthcare.com/">
-          <img src="../../assets/images/esign.png" width="35" alt="" />
-          <strong class="d-block">Chữ ký điện tử</strong>
-        </a>
-      </div>
+        <div class="soft">
+            <a href="https://esign.astahealthcare.com/">
+                <img src="../../assets/images/esign.png" width="35" alt="" />
+                <strong class="d-block">Chữ ký điện tử</strong>
+            </a>
+        </div>
 
-      <div class="soft">
-        <a href="https://task.astahealthcare.com/">
-          <img src="../../assets/images/task.png" width="28" alt="" />
-          <strong class="d-block">Công việc</strong>
-        </a>
+        <div class="soft">
+            <a href="https://esign-gmp.astahealthcare.com/">
+                <img src="../../assets/images/gmp.png" width="28" alt="" />
+                <strong class="d-block">Hồ sơ GMP</strong>
+            </a>
 
-      </div>
+        </div>
 
-      <div class="soft">
+        <div class="soft active">
+            <a href="https://task.astahealthcare.com/">
+                <img src="../../assets/images/task.png" width="28" alt="" />
+                <strong class="d-block">Công việc</strong>
+            </a>
 
-        <a href="https://flow.astahealthcare.com/">
-          <img src="../../assets/images/workflow.png" width="28" alt="" />
-          <strong class="d-block">Quy trình</strong>
-        </a>
-      </div>
+        </div>
+
+        <div class="soft">
+
+            <a href="https://flow.astahealthcare.com/">
+                <img src="../../assets/images/workflow.png" width="28" alt="" />
+                <strong class="d-block">Quy trình</strong>
+            </a>
+        </div>
+        <div class="soft">
+
+            <a href="https://qrcode.astahealthcare.com/">
+                <img src="../../assets/images/qrcode.png" width="28" alt="" />
+                <strong class="d-block">QR Code</strong>
+            </a>
+        </div>
     </div>
     <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
       <i class="pi pi-ellipsis-v"></i>
@@ -176,12 +191,16 @@ const toggle = (event) => {
 </template>
 
 <style lang="scss" scoped>
-.soft {
-  height: 100%;
-  align-content: center;
-  justify-items: center;
-  display: inline-grid;
-  margin-left: 20px;
-  text-align: center;
-}
+    .soft {
+        height: 100%;
+        align-content: center;
+        justify-items: center;
+        display: inline-grid;
+        padding: 11px;
+        text-align: center;
+    }
+
+    .soft.active {
+        background: #ededed
+    }
 </style>

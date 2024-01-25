@@ -5,17 +5,10 @@ using Vue.Data;
 using Vue.Models;
 using Vue.Services;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using System.Net;
 //using it.Services;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.AspNetCore.Authentication;
 //using Vue.Middleware;
 
 namespace Vue
