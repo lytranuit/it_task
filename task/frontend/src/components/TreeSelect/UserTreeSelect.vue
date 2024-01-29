@@ -39,7 +39,7 @@ const normalizer = (node) => {
   }
 }
 onMounted(() => {
-  console.log(1);
+  // console.log(1);
   store.fetchUsers().then(() => {
   });
 });

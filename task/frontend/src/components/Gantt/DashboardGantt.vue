@@ -88,7 +88,8 @@
                                 Quá hạn
                             </div>
                         </template>
-                        <template v-else-if="data.taskData.is_overdue && data.progress == 100">
+                        <template
+                            v-else-if="data.progress == 100 && data.taskData.finished_at != null && data.taskData.endDate < data.taskData.finished_at">
                             <Knob valueColor='#01b0f1' v-model="data.progress" valueTemplate="" :size="20" readonly />
                             <div class="align-self-center ml-2" style="color:#01b0f1">
                                 Hoàn thành trễ hạn
@@ -109,7 +110,7 @@
 
                         </template>
                         <template v-else>
-                            <Knob valueColor='#28aa37' v-model="data.progress" valueTemplate="" :size="20" readonly />
+                            <Knob v-model="data.progress" valueTemplate="" :size="20" readonly />
                             <div class="align-self-center ml-2">
                                 Hoàn thành <span>{{ data.progress }}%</span>
                             </div>
@@ -127,7 +128,7 @@
                 </span>
 
             </div> -->
-            <SidebarForm v-model:visible="visibleFormTask" v-if="visibleFormTask"></SidebarForm>
+            <SidebarForm v-if="visibleSidebar"></SidebarForm>
 
             <Dialog modal :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '95vw' }">
                 <template #header>
@@ -182,9 +183,11 @@ import { rand } from '../../utilities/rand';
 import Tag from "primevue/tag";
 import Knob from 'primevue/knob';
 import SidebarForm from "../Task/SidebarForm.vue";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
 const storeProject = useProject();
-const { taskList, taskEdit, key } = storeToRefs(storeProject);
+const { taskList, taskEdit, key, visibleSidebar } = storeToRefs(storeProject);
 const op = ref();
 const toggle = (event) => {
     op.value.toggle(event);
@@ -294,10 +297,8 @@ const type = ref("mytask");
 const type_2 = ref();
 
 const hideTask = (e) => {
-    visibleFormTask.value = false;
     key.value = rand();
 }
-const visibleFormTask = ref(false);
 const actionComplete = (e) => {
     // console.log(e);
     if (e.requestType == "delete") {
@@ -326,7 +327,7 @@ const actionComplete = (e) => {
         // console.log(e.data);
         var data = e.data.taskData;
         taskEdit.value = data;
-        visibleFormTask.value = true;
+        visibleSidebar.value = true;
     }
     return true;
 }
@@ -344,8 +345,18 @@ const refresh = () => {
         // key.value = rand();
     });
 }
+const loadTask = () => {
+    // console.log(route.query.taskId);
+    var taskId = route.query.taskId;
+    if (taskId) {
+        taskEdit.value.id = taskId;
+        visibleSidebar.value = true;
+    }
+}
 onMounted(() => {
+    // console.log(taskEdit.value);
     refresh();
+    loadTask();
 });
 </script>
 <style>

@@ -260,7 +260,7 @@ const comments = ref([]);
 const comment = ref();
 const show_more = ref(true);
 const storeProject = useProject();
-const { taskEdit, taskList, statusList, visibleSidebar, width, key } = storeToRefs(storeProject);
+const { taskEdit, taskList, visibleSidebar, width, key } = storeToRefs(storeProject);
 
 const emit = defineEmits(["reset", "beforeSave", "save"]);
 const is_kehoach = ref(false);
@@ -428,6 +428,7 @@ onMounted(() => {
     getComments();
     getEvents();
     getTask();
+    // console.log(taskEdit.value);
 })
 
 </script>

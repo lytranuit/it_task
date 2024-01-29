@@ -63,7 +63,8 @@
             Quá hạn
           </div>
         </template>
-        <template v-else-if="data.taskData.is_overdue && data.progress == 100">
+        <template
+          v-else-if="data.progress == 100 && data.taskData.finished_at != null && data.taskData.endDate < data.taskData.finished_at">
           <Knob valueColor='#01b0f1' v-model="data.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2" style="color:#01b0f1">
             Hoàn thành trễ hạn
@@ -83,7 +84,7 @@
 
         </template>
         <template v-else>
-          <Knob valueColor='#28aa37' v-model="data.progress" valueTemplate="" :size="20" readonly />
+          <Knob v-model="data.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2">
             Hoàn thành <span>{{ data.progress }}%</span>
           </div>

@@ -220,7 +220,7 @@ namespace it_template.Areas.V1.Controllers
                     var body = _view.Render("Emails/AssignTask", new
                     {
                         link_logo = Domain + "/images/clientlogo_astahealthcare.com_f1800.png",
-                        link = Domain,
+                        link = Domain + "?taskId=" + TaskModel_old.id,
                         task_name = TaskModel_old.name,
                         note = TaskModel_old.description,
                         start_date = TaskModel_old.startDate != null ? TaskModel_old.startDate.Value.ToString("yyyy-MM-dd HH:mm") : "",
@@ -374,105 +374,70 @@ namespace it_template.Areas.V1.Controllers
                 _context.AddRange(items_comment);
                 _context.SaveChanges();
             }
-            TaskCommentModel = _context.TaskCommentModel.Where(d => d.id == TaskCommentModel.id).Include(d => d.files).Include(d => d.user).FirstOrDefault();
-            ////
-            ///
-            //DocumentUserReadModel user_read = _context.DocumentUserReadModel.Where(d => d.document_id == DocumentCommentModel.document_id && d.user_id == DocumentCommentModel.user_id).FirstOrDefault();
-            //if (user_read == null)
-            //{
-            //    user_read = new DocumentUserReadModel
-            //    {
-            //        document_id = DocumentCommentModel.document_id,
-            //        user_id = DocumentCommentModel.user_id,
-            //        time_read = DateTime.Now,
-            //    };
-            //    _context.Add(user_read);
-            //}
-            //else
-            //{
-            //    user_read.time_read = DateTime.Now;
-            //    _context.Update(user_read);
-            //}
+
+
+
+
 
             ///create unread
+            //var ExecutionModel = _context.ExecutionModel.Where(d => d.id == CommentModel.execution_id).FirstOrDefault();
+            var TaskModel = _context.TaskModel
+                        .Where(d => d.id == TaskCommentModel.taskId).Include(d => d.assignees)
+                        .FirstOrDefault();
 
-            //var DocumentModel = _context.DocumentModel
-            //            .Where(d => d.id == DocumentCommentModel.document_id)
-            //            .Include(d => d.users_follow)
-            //            .Include(d => d.users_signature)
-            //            .Include(d => d.users_receive)
-            //            .FirstOrDefault();
+            var users_related = new List<string>();
+            users_related.Add(TaskModel.created_by);
+            users_related.AddRange(TaskModel.list_assignee);
+            users_related = users_related.Distinct().ToList();
+            var itemToRemove = users_related.SingleOrDefault(r => r == user_id);
+            users_related.Remove(itemToRemove);
+            //SEND MAIL
+            if (users_related != null)
+            {
+                var users_related_obj = _context.UserModel.Where(d => users_related.Contains(d.Id)).Select(d => d.Email).ToList();
+                var mail_string = string.Join(",", users_related_obj.ToArray());
+                string Domain = (HttpContext.Request.IsHttps ? "https://" : "http://") + HttpContext.Request.Host.Value;
+                var attach = items_comment.Select(d => d.url).ToList();
+                var text = TaskCommentModel.comment;
+                if (attach.Count() > 0 && TaskCommentModel.comment == null)
+                {
+                    text = $"{user.FullName} gửi đính kèm";
+                }
+                var body = _view.Render("Emails/NewComment",
+                    new
+                    {
+                        link_logo = Domain + "/images/clientlogo_astahealthcare.com_f1800.png",
+                        link = Domain + "?taskId=" + TaskModel.id,
+                        text = text,
+                        name = user.FullName
+                    });
 
-            //var users_follow = DocumentModel.users_follow.Select(a => a.user_id).ToList();
-            //var users_signature = DocumentModel.users_signature.Select(a => a.user_id).ToList();
-            //var users_representative = DocumentModel.users_signature.Where(a => a.representative_id != null).Select(a => a.representative_id).ToList();
-            //var users_receive = DocumentModel.users_receive.Select(a => a.user_id).ToList();
-            //List<string> users_related = new List<string>();
-            //users_related.AddRange(users_follow);
-            //users_related.AddRange(users_signature);
-            //users_related.AddRange(users_representative);
-            //users_related.AddRange(users_receive);
-            //users_related = users_related.Distinct().ToList();
-            //var itemToRemove = users_related.SingleOrDefault(r => r == user_id);
-            //users_related.Remove(itemToRemove);
-            //var items = new List<DocumentUserUnreadModel>();
-            //foreach (string u in users_related)
-            //{
-            //    items.Add(new DocumentUserUnreadModel
-            //    {
-            //        user_id = u,
-            //        document_id = DocumentModel.id,
-            //        time = DateTime.Now,
-            //    });
-            //}
-            //_context.AddRange(items);
-            ////SEND MAIL
-            //if (users_related != null)
-            //{
-            //    var users_related_obj = _context.UserModel.Where(d => users_related.Contains(d.Id)).Select(d => d.Email).ToList();
-            //    var mail_string = string.Join(",", users_related_obj.ToArray());
-            //    string Domain = (HttpContext.Request.IsHttps ? "https://" : "http://") + HttpContext.Request.Host.Value;
-            //    var attach = items_comment.Select(d => d.url).ToList();
-            //    var text = DocumentCommentModel.comment;
-            //    if (attach.Count() > 0 && DocumentCommentModel.comment == null)
-            //    {
-            //        text = $"{user.FullName} gửi đính kèm";
-            //    }
-            //    var body = _view.Render("Emails/NewComment",
-            //        new
-            //        {
-            //            link_logo = Domain + "/images/clientlogo_astahealthcare.com_f1800.png",
-            //            link = Domain + "/admin/document/details/" + DocumentModel.id,
-            //            text = text,
-            //            name = user.FullName
-            //        });
-
-
-            //    var email = new EmailModel
-            //    {
-            //        email_to = mail_string,
-            //        subject = "[Tin nhắn mới] " + DocumentModel.name_vi,
-            //        body = body,
-            //        email_type = "new_comment_document",
-            //        status = 1,
-            //        data_attachments = attach
-
-            //    };
-            //    _context.Add(email);
-            //}
+                var email = new EmailModel
+                {
+                    email_to = mail_string,
+                    subject = "[Tin nhắn mới] " + TaskModel.name,
+                    body = body,
+                    email_type = "new_comment_task",
+                    status = 1,
+                    data_attachments = attach
+                };
+                _context.Add(email);
+            }
             ////await _context.SaveChangesAsync();
 
-            ///// Audittrail
-            //var audit = new AuditTrailsModel();
-            //audit.UserId = user.Id;
-            //audit.Type = AuditType.Update.ToString();
-            //audit.DateTime = DateTime.Now;
-            //audit.description = $"Tài khoản {user.FullName} đã thêm bình luận.";
-            //_context.Add(audit);
-            //await _context.SaveChangesAsync();
+            /// Audittrail
+            var audit = new AuditTrailsModel();
+            audit.UserId = user.Id;
+            audit.Type = AuditType.Update.ToString();
+            audit.DateTime = DateTime.Now;
+            audit.description = $"Tài khoản {user.FullName} đã thêm bình luận.";
+            _context.Add(audit);
+            await _context.SaveChangesAsync();
 
-            //DocumentCommentModel.user = await UserManager.GetUserAsync(currentUser);
-            //DocumentCommentModel.is_read = true;
+
+
+
+            TaskCommentModel = _context.TaskCommentModel.Where(d => d.id == TaskCommentModel.id).Include(d => d.files).Include(d => d.user).FirstOrDefault();
 
             return Json(new
             {
@@ -816,7 +781,7 @@ namespace it_template.Areas.V1.Controllers
             var body = _view.Render("Emails/FinishTask", new
             {
                 link_logo = Domain + "/images/clientlogo_astahealthcare.com_f1800.png",
-                link = Domain,
+                link = Domain + "?taskId=" + TaskModel_old.id,
                 task_name = TaskModel_old.name
             });
             var email = new EmailModel

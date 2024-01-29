@@ -49,7 +49,6 @@ import Loading from "../components/loading.vue";
 import { labelCenter } from "../service/chartPlugin";
 import DashboardGantt from "../components/Gantt/DashboardGantt.vue";
 import Api from "../api/Api";
-import Button from "primevue/button";
 const point = ref(0);
 const task = ref(0);
 const waiting = ref(false);
