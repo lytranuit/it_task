@@ -33,6 +33,7 @@ namespace Vue.Data
         public DbSet<TaskFavoriteModel> TaskFavoriteModel { get; set; }
         public DbSet<ProjectModel> ProjectModel { get; set; }
         public DbSet<ProjectAssigneeModel> ProjectAssigneeModel { get; set; }
+        public DbSet<ProjectManagerModel> ProjectManagerModel { get; set; }
         public DbSet<AuditTrailsModel> AuditTrailsModel { get; set; }
 
         public DbSet<UserModel> UserModel { get; set; }
@@ -65,6 +66,12 @@ namespace Vue.Data
                 table.userId
             });
             modelBuilder.Entity<ProjectAssigneeModel>().ToTable("projectAssignee").HasKey(table => new
+            {
+                table.projectId,
+                table.userId
+            });
+
+            modelBuilder.Entity<ProjectManagerModel>().ToTable("projectManager").HasKey(table => new
             {
                 table.projectId,
                 table.userId

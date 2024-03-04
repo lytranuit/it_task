@@ -13,6 +13,7 @@ namespace Vue.Models
         public virtual UserModel? user_created { get; set; }
 
         public virtual List<ProjectAssigneeModel>? assignees { get; set; }
+        public virtual List<ProjectManagerModel>? manager { get; set; }
         public string name { get; set; }
         public string? description { get; set; }
 

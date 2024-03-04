@@ -3,7 +3,8 @@
   width: 300px;
   height: 100%;
   z-index: 999;
-  // overflow-y: auto;
+  overflow: auto;
+  max-height: calc(100% - 70px);
   user-select: none;
   top: 5rem;
   // left: 2rem;

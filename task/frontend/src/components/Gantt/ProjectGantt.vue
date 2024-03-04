@@ -6,7 +6,9 @@
     :timelineSettings="timelineSettings" height="600px" :taskbarTemplate="'taskbarTemplate'"
     :labelSettings="labelSettings" :eventMarkers="eventMarkers" :renderBaseline="true" rowHeight="50"
     :allowUnscheduledTasks='true' :enableImmutableMode="true" :project-start-date="projectStartDate"
-    :project-end-date="projectEndDate">
+    :project-end-date="projectEndDate" :allowResizing="true" :allowFiltering="true" :filterSettings="{
+      type: 'Excel'
+    }">
     <EjsGanttColumns>
       <EjsGanttColumn field='id' headerText='Task ID' textAlign='Left'>
 
@@ -15,6 +17,8 @@
       </EjsGanttColumn>
       <EjsGanttColumn field='stauts' headerText='Nhóm công việc' :template="'statusTemplate'"></EjsGanttColumn>
       <EjsGanttColumn field='state' headerText='Tình trạng' :template="'stateTemplate'"></EjsGanttColumn>
+      <EjsGanttColumn field='user_created' headerText='Người tạo' :template="'user_createdTemplate'">
+      </EjsGanttColumn>
       <EjsGanttColumn field='assignees' headerText='Người thực hiện' :template="'listAssignTemplate'"></EjsGanttColumn>
       <EjsGanttColumn field='progress' headerText='Tiến độ' :template="'prgressTemplate'">
       </EjsGanttColumn>
@@ -25,7 +29,7 @@
         :class="{ 'e-hide': data.taskData.startDate == null, 'bg-danger': data.taskData.is_overdue }"
         :style="'height:22px;background: #d1d3e9;border: 1px solid #5869c5;'">
         <div class="e-gantt-child-progressbar-inner-div e-gantt-child-progressbar"
-          :style="'height: 100%;width:' + data.progress + '%;background:#22C55E'">
+          :style="'height: 100%;width:' + data.taskData.progress + '%;background:#22C55E'">
           <span class="e-task-label" style="line-height: 21px;">{{ data.taskData.name }}</span>
         </div>
       </div>
@@ -40,7 +44,7 @@
       </div>
     </template>
     <template v-slot:prgressTemplate="{ data }">
-      <span>{{ data.progress }}%</span>
+      <span>{{ data.taskData.progress }}%</span>
     </template>
     <template v-slot:listAssignTemplate="{ data }">
       <template v-if="data.taskData.assignees.length > 0">
@@ -57,26 +61,26 @@
     </template>
     <template v-slot:stateTemplate="{ data }">
       <div class="d-flex">
-        <template v-if="data.taskData.is_overdue && data.progress != 100">
-          <Knob valueColor='#ed7d31' v-model="data.progress" valueTemplate="" :size="20" readonly />
+        <template v-if="data.taskData.is_overdue && data.taskData.progress != 100">
+          <Knob valueColor='#ed7d31' v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2" style="color:#ed7d31">
             Quá hạn
           </div>
         </template>
         <template
-          v-else-if="data.progress == 100 && data.taskData.finished_at != null && data.taskData.endDate < data.taskData.finished_at">
-          <Knob valueColor='#01b0f1' v-model="data.progress" valueTemplate="" :size="20" readonly />
+          v-else-if="data.taskData.progress == 100 && data.taskData.finished_at != null && data.taskData.endDate < data.taskData.finished_at">
+          <Knob valueColor='#01b0f1' v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2" style="color:#01b0f1">
             Hoàn thành trễ hạn
           </div>
         </template>
-        <template v-else-if="data.progress == 0">
+        <template v-else-if="data.taskData.progress == 0">
           <Knob v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2">
             Chưa thực hiện
           </div>
         </template>
-        <template v-else-if="data.progress == 100">
+        <template v-else-if="data.taskData.progress == 100">
           <Knob valueColor='#28aa37' v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2">
             Hoàn thành
@@ -84,13 +88,21 @@
 
         </template>
         <template v-else>
-          <Knob v-model="data.progress" valueTemplate="" :size="20" readonly />
+          <Knob v-model="data.taskData.progress" valueTemplate="" :size="20" readonly />
           <div class="align-self-center ml-2">
-            Hoàn thành <span>{{ data.progress }}%</span>
+            Hoàn thành <span>{{ data.taskData.progress }}%</span>
           </div>
         </template>
       </div>
       <!-- <span>{{ data.progress }}%</span> -->
+    </template>
+
+    <template v-slot:user_createdTemplate="{ data }">
+      <div v-if="data.taskData.user_created" class="d-flex">
+        <Avatar :image="data.taskData.user_created.image_url" :title="data.taskData.user_created.fullName" size="small"
+          shape="circle" /> <span class="align-self-center ml-2">{{
+            data.taskData.user_created.fullName }}</span>
+      </div>
     </template>
   </EjsGantt>
   <div class="_kqsw1n9t _1e0c1txw _1pbyasm9 _1reoewfl _18m9ewfl _4cvresu3 _lcxvglyw">
@@ -137,7 +149,7 @@ import OverlayPanel from 'primevue/overlaypanel';
 // import the component
 import {
   GanttComponent as EjsGantt, ColumnsDirective as EjsGanttColumns, ColumnDirective as EjsGanttColumn, Edit, RowDD, Selection, Toolbar,
-  ContextMenu, DayMarkers, Sort
+  ContextMenu, DayMarkers, Sort, Resize, Filter
 } from '@syncfusion/ej2-vue-gantt';
 // import { DataManager, WebApiAdaptor } from "@syncfusion/ej2-data";
 // import { ganttData } from '../../datasource.js';
@@ -305,7 +317,7 @@ const actionComplete = (e) => {
   }
   return true;
 }
-provide('gantt', [Edit, RowDD, Selection, ContextMenu, Toolbar, DayMarkers, Sort]);
+provide('gantt', [Edit, RowDD, Selection, ContextMenu, Toolbar, DayMarkers, Sort, Resize, Filter]);
 onMounted(() => {
   taskApi.GetList(route.params.id).then((res) => {
     // console.log(res);

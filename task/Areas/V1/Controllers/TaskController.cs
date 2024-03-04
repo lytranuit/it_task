@@ -4,19 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using NuGet.Packaging.Signing;
-using Spire.Xls;
-using System.Collections;
-using System.Diagnostics.Metrics;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Text.Json;
 using Vue.Data;
 using Vue.Models;
 using Vue.Services;
 using workflow.Areas.V1.Models;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace it_template.Areas.V1.Controllers
 {
@@ -135,7 +126,10 @@ namespace it_template.Areas.V1.Controllers
                     event_content += $"<li>Tình trạng:<b>{TaskModel_old.progress}</b> -> <b>{TaskModel.progress}</b></li>";
                     TaskModel_old.progress = TaskModel.progress;
                 }
-
+                if (TaskModel_old.progress != 100)
+                {
+                    TaskModel_old.finished_at = null;
+                }
                 TaskModel.startDate = TaskModel.startDate != null && TaskModel.startDate.Value.Kind == DateTimeKind.Utc ? TaskModel.startDate.Value.ToLocalTime() : TaskModel.startDate;
                 TaskModel.endDate = TaskModel.endDate != null && TaskModel.endDate.Value.Kind == DateTimeKind.Utc ? TaskModel.endDate.Value.ToLocalTime() : TaskModel.endDate;
                 TaskModel.baselineStartDate = TaskModel.baselineStartDate != null && TaskModel.baselineStartDate.Value.Kind == DateTimeKind.Utc ? TaskModel.baselineStartDate.Value.ToLocalTime() : TaskModel.baselineStartDate;
@@ -255,6 +249,7 @@ namespace it_template.Areas.V1.Controllers
                 .Include(d => d.attachments)
                 .Include(d => d.status)
                 .Include(d => d.project)
+                .Include(d => d.user_created)
                 .Include(d => d.assignees)
                 .ThenInclude(d => d.user)
                 .Include(d => d.favorites.Where(d => d.userId == user_id))
@@ -294,6 +289,7 @@ namespace it_template.Areas.V1.Controllers
                 .Include(d => d.attachments)
                 .Include(d => d.status)
                 .Include(d => d.project)
+                .Include(d => d.user_created)
                 .Include(d => d.assignees)
                 .ThenInclude(d => d.user)
                 .Include(d => d.favorites.Where(d => d.userId == user_id))
@@ -570,6 +566,10 @@ namespace it_template.Areas.V1.Controllers
                     var number_issue_rank = convertInt(issue_rank, issue_rank.Length);
                     var nextIndex = number_issue_rank + 1;
                     rank_return = convertString(nextIndex, issue_rank.Length);
+                }
+                else
+                {
+                    rank_return = "i";
                 }
 
             }

@@ -29,6 +29,14 @@
                 </UserTreeSelect>
             </div>
         </div>
+
+        <div class="mb-3 row">
+            <div class="col-12">
+                <label for="assignee" class="form-label">Nhóm công việc</label>
+                <StatusTreeSelect :required="true" v-model="taskEdit.statusId" :projectId="projectId">
+                </StatusTreeSelect>
+            </div>
+        </div>
         <div class="mb-3 row">
             <div class="col-12">
                 <a href="#" @click="is_hanhoanthanh = !is_hanhoanthanh" style="color: #039be5;"><i
@@ -85,6 +93,7 @@ import { kanbanData } from '../../datasource';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
 import { rand } from '../../utilities/rand';
+import StatusTreeSelect from '../TreeSelect/StatusTreeSelect.vue';
 const confirm = useConfirm();
 const gantt = ref();
 

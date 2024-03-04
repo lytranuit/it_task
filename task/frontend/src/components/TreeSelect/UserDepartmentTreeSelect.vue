@@ -1,6 +1,7 @@
 <template>
   <TreeSelect :options="userdepartments" :multiple="multiple" :modelValue="modelValue" :flat="flat" :name="name"
-    :required="required" :value-consists-of="valueConsistsOf" :append-to-body="true" @update:modelValue="update" :disable-fuzzy-matching="true">
+    :required="required" :value-consists-of="valueConsistsOf" :append-to-body="true" @update:modelValue="update" limit="5"
+     :disable-fuzzy-matching="true">
   </TreeSelect>
 </template>
 
@@ -32,7 +33,7 @@ const props = defineProps({
   flat: {
     type: Boolean,
     default: false,
-  },
+  }
 });
 const emit = defineEmits(["update:modelValue"]);
 const store = useAuth();

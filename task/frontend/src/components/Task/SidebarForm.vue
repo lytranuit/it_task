@@ -71,6 +71,15 @@
                         </UserTreeSelect>
                     </div>
                 </div>
+
+                <div class="mb-3 row" v-if="checkPermission(taskEdit)">
+                    <div class="col-12">
+                        <label for="statusId" class="form-label">Nhóm công việc</label>
+                        <StatusTreeSelect :required="true" v-model="taskEdit.statusId" @update:modelValue="save"
+                            :projectId="taskEdit.projectId">
+                        </StatusTreeSelect>
+                    </div>
+                </div>
                 <!-- <div class="mb-3 row">
                     <div class="col-12">
                         <label for="attachments" class="form-label">Tập tin đính kèm</label>
@@ -252,6 +261,7 @@ import { formatDate } from '../../utilities/util'
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from "primevue/useconfirm";
 import { useAuth } from '../../stores/auth';
+import StatusTreeSelect from '../TreeSelect/StatusTreeSelect.vue';
 
 const storeAuth = useAuth();
 const { is_admin, user, is_manager, list_users } = storeToRefs(storeAuth);
@@ -260,7 +270,7 @@ const comments = ref([]);
 const comment = ref();
 const show_more = ref(true);
 const storeProject = useProject();
-const { taskEdit, taskList, visibleSidebar, width, key } = storeToRefs(storeProject);
+const { taskEdit, taskList, visibleSidebar, width, key, project } = storeToRefs(storeProject);
 
 const emit = defineEmits(["reset", "beforeSave", "save"]);
 const is_kehoach = ref(false);
@@ -326,11 +336,18 @@ const AddComment = () => {
     return true;
 }
 const checkPermission = (task) => {
+    return true;
+    var list_manager = project.value.list_manager || [];
+    // console.log(list_manager);
     if (is_admin.value)
         return true;
     if (task.created_by == user.value.id) {
         return true;
     }
+    if (project.value.created_by == user.value.id)
+        return true;
+    if (list_manager.indexOf(user.value.id) != -1)
+        return true;
     return false;
 }
 const op = ref();
@@ -412,10 +429,10 @@ const checkPermissionPoint = (list_assignee) => {
         return true;
     if (!is_manager.value)
         return false;
-    let list = list_users.value.map((item)=>{
+    let list = list_users.value.map((item) => {
         return item.userManagerId;
     })
-    if (sameMembers(list_assignee,list))
+    if (sameMembers(list_assignee, list))
         return true;
     return false;
 

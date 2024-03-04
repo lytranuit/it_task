@@ -67,6 +67,17 @@ export default {
       .then((res) => res.data);
   },
 
+  summaryProject(projectId) {
+    return repository
+      .get(`/v1/${resoure}/summaryProject`,{params:{projectId:projectId}})
+      .then((res) => res.data);
+  },
+
+  summary1Project(projectId) {
+    return repository
+      .get(`/v1/${resoure}/summary1Project`,{params:{projectId:projectId}})
+      .then((res) => res.data);
+  },
   topdiemnv(tungay, denngay, nhanviens) {
     return repository.post(`/v1/${resoure}/topdiemnv`,
       {

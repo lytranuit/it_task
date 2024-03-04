@@ -622,7 +622,7 @@ small {
 
 .left-sidenav {
 	background-color: #ffffff;
-	min-height: calc(100vh);
+	min-height: calc(100vh - 70px);
 	-webkit-box-shadow: 0 6px 20px rgba(36, 37, 38, 0.08);
 	box-shadow: 0 6px 20px rgba(36, 37, 38, 0.08);
 	-webkit-transition: .3s;

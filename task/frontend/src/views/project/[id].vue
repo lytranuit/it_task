@@ -26,12 +26,16 @@
     </div>
     <TabView lazy="">
       <TabPanel header="Timeline">
+        <div class="mb-2">
+          <ProjectSummary></ProjectSummary>
+        </div>
+        <div class="mb-2">
+          <Metagroup></Metagroup>
+        </div>
         <ProjectGantt></ProjectGantt>
       </TabPanel>
       <TabPanel header="Board">
         <ProjectKanban :key="key"></ProjectKanban>
-      </TabPanel>
-      <TabPanel header="Summary">
       </TabPanel>
     </TabView>
   </div>
@@ -48,6 +52,7 @@ import Avatar from 'primevue/avatar';
 import ProjectKanban from '../../components/Kanban/ProjectKanban.vue';
 import ProjectCalendar from "../../components/Calendar/ProjectCalendar.vue"
 import ProjectGantt from '../../components/Gantt/ProjectGantt.vue';
+import ProjectSummary from '../../components/Project/Summary.vue';
 import projectApi from "../../api/projectApi";
 import projectStatusApi from "../../api/projectStatusApi";
 import { useRoute, useRouter } from "vue-router";
@@ -62,6 +67,7 @@ import FormTask from '../../components/Task/Form.vue';
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
 import { useAuth } from "../../stores/auth";
+import Metagroup from "../../components/Project/Metagroup.vue";
 const store = useAuth();
 const { user } = storeToRefs(store);
 const confirm = useConfirm();
@@ -133,6 +139,10 @@ onMounted(() => {
     // console.log(res[1]);
     project.value = res[0];
     project.value.list_assignee = project.value.assignees.map((item) => {
+      return item.userId;
+    });
+
+    project.value.list_manager = project.value.manager.map((item) => {
       return item.userId;
     });
     statusList.value = res[1];

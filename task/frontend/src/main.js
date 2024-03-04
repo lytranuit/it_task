@@ -9,6 +9,7 @@ import ConfirmationService from "primevue/confirmationservice";
 import { i18n } from "./service/i18n";
 import Tooltip from "primevue/tooltip";
 import DialogService from "primevue/dialogservice";
+import Chat from 'vue3-beautiful-chat'
 // import { FileManagerPlugin } from "@syncfusion/ej2-vue-filemanager";
 // import { TreeGridPlugin } from '@syncfusion/ej2-vue-treegrid';
 // import { KanbanPlugin } from '@syncfusion/ej2-vue-kanban';
@@ -41,6 +42,7 @@ app
 // app.use(KanbanPlugin);
 // app.use(TreeGridPlugin);
 // app.use(FileManagerPlugin);
+app.use(Chat)
 app.use(ConfirmationService);
 app.use(DialogService);
 app.use(ToastService);

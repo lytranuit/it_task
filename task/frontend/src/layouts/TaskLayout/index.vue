@@ -3,6 +3,7 @@ import { computed, watch, ref, onMounted } from "vue";
 import LeftSide from "./LeftSide.vue";
 import Topbar from "./Topbar.vue";
 import DynamicDialog from "primevue/dynamicdialog";
+import Chat from "./Chat.vue";
 import { useLayout } from "@/layouts/composables/layout";
 
 import { useAuth } from "../../stores/auth";
@@ -104,6 +105,7 @@ onMounted(() => {
 
 <template>
   <div class="layout-wrapper" :class="containerClass">
+    
     <Topbar></Topbar>
     <div class="layout-sidebar">
       <LeftSide></LeftSide>
@@ -115,6 +117,7 @@ onMounted(() => {
     </div>
     <div class="layout-mask"></div>
     <DynamicDialog> </DynamicDialog>
+    <Chat></Chat>
   </div>
 </template>
 

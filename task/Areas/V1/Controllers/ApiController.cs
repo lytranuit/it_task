@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Vue.Data;
 using Vue.Models;
 using static it_template.Areas.V1.Controllers.UserController;
+using static iText.Svg.SvgConstants;
 
 namespace it_template.Areas.V1.Controllers
 {
@@ -163,7 +164,67 @@ namespace it_template.Areas.V1.Controllers
             return Json(new { task = count, point = point });
         }
 
+        public async Task<JsonResult> SummaryProject(int projectId)
+        {
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            string user_id = UserManager.GetUserId(currentUser); // Get user id:
 
+            var task = _context.TaskModel.Where(d => d.projectId == projectId && d.deleted_at == null).ToList();
+
+
+            var count = task.Count();
+            var count_hoanthanh = task.Where(d => d.finished_at != null).Count();
+            var count_dang_th = task.Where(d => d.finished_at == null && d.progress > 0 && d.progress < 100 && (d.endDate == null || (d.endDate != null && d.endDate > DateTime.Now))).Count();
+            var count_chua_th = task.Where(d => d.finished_at == null && d.progress == 0 && (d.endDate == null || (d.endDate != null && d.endDate > DateTime.Now))).Count();
+            var count_qua_han = task.Where(d => d.finished_at == null && d.endDate != null && d.endDate < DateTime.Now).Count();
+
+            var data = new
+            {
+                labels = new List<string>() { "Hoàn thành", "Đang thực hiện", "Chưa thực hiện", "Quá hạn" },
+                datasets = new List<Chart>() {
+                    new Chart {
+                        label = "Công việc",
+                        data = new List<int>() { count_hoanthanh, count_dang_th, count_chua_th, count_qua_han },
+                        backgroundColor = new List<string>() { "#00af50", "#01b0f1", "#e8e833", "#ed7d31" }
+                    }
+                }
+
+            };
+
+            return Json(new { count = count, data = data });
+        }
+
+        public async Task<JsonResult> Summary1Project(int projectId)
+        {
+            System.Security.Claims.ClaimsPrincipal currentUser = this.User;
+            string user_id = UserManager.GetUserId(currentUser); // Get user id:
+
+            var task = _context.TaskModel.Where(d => d.projectId == projectId && d.deleted_at == null).ToList();
+            if (task.Count() == 0)
+            {
+                return Json(new { data = new List<string>() });
+
+            }
+            var list_endtime = task.Select(d => d.endDate).ToList();
+            var endDate = task.MaxBy(d => d.endDate).endDate;
+            var count = task.Count();
+
+            var count_hoanthanh = task.Where(d => d.finished_at != null).Count();
+            decimal value = count > 0 ? (count_hoanthanh * 100 / count) : 0;
+            var data = new List<Metagroup>()
+            {
+                new Metagroup
+                {
+                    label = "Hoàn thành",
+                    color = "#00af50",
+                    value= value
+                }
+            };
+
+
+
+            return Json(new { data = data, endDate = endDate });
+        }
         [HttpPost]
         public async Task<JsonResult> topdiemnv(DateTime? tungay, DateTime? denngay, List<string>? nhanviens)
         {
@@ -462,6 +523,13 @@ namespace it_template.Areas.V1.Controllers
         }
     }
 
+    public class Metagroup
+    {
+        public string? label { get; set; }
+        public string? color { get; set; }
+
+        public decimal? value { get; set; }
+    }
     public class Chart
     {
         public string? label { get; set; }

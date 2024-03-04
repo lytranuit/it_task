@@ -32,7 +32,7 @@ namespace it_template.Areas.V1.Controllers
             return Json(project);
         }
         [HttpPost]
-        public async Task<JsonResult> Save(ProjectModel ProjectModel, List<string> list_assignee)
+        public async Task<JsonResult> Save(ProjectModel ProjectModel, List<string> list_assignee, List<string> list_manager)
         {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
             var user_id = UserManager.GetUserId(currentUser);
@@ -78,10 +78,12 @@ namespace it_template.Areas.V1.Controllers
                 _context.Update(ProjectModel_old);
                 _context.SaveChanges();
             }
+
+            var list_old = _context.ProjectAssigneeModel.Where(d => d.projectId == ProjectModel_old.id).ToList();
+            _context.RemoveRange(list_old);
+            _context.SaveChanges();
             if (list_assignee != null)
             {
-                var list_old = _context.ProjectAssigneeModel.Where(d => d.projectId == ProjectModel_old.id).ToList();
-                _context.RemoveRange(list_old);
 
                 var assignees = new List<ProjectAssigneeModel>();
                 foreach (var assignee in list_assignee)
@@ -96,6 +98,25 @@ namespace it_template.Areas.V1.Controllers
                 _context.SaveChanges();
 
             }
+
+            var listmanager_old = _context.ProjectManagerModel.Where(d => d.projectId == ProjectModel_old.id).ToList();
+            _context.RemoveRange(listmanager_old);
+            _context.SaveChanges();
+            if (list_manager != null)
+            {
+                var managers = new List<ProjectManagerModel>();
+                foreach (var m in list_manager)
+                {
+                    managers.Add(new ProjectManagerModel
+                    {
+                        userId = m,
+                        projectId = ProjectModel_old.id
+                    });
+                }
+                _context.AddRange(managers);
+                _context.SaveChanges();
+
+            }
             return Json(ProjectModel);
         }
         public async Task<JsonResult> GetList()
@@ -107,7 +128,8 @@ namespace it_template.Areas.V1.Controllers
             if (!is_admin)
             {
                 var list = _context.ProjectAssigneeModel.Where(d => d.userId == user.Id).Select(d => d.projectId).ToList();
-                projects = _context.ProjectModel.Where(d => d.deleted_at == null && (list.Contains(d.id) || d.created_by == user.Id)).ToList();
+                var listmanager = _context.ProjectManagerModel.Where(d => d.userId == user.Id).Select(d => d.projectId).ToList();
+                projects = _context.ProjectModel.Where(d => d.deleted_at == null && (list.Contains(d.id) || listmanager.Contains(d.id) || d.created_by == user.Id)).ToList();
             }
             else
             {
@@ -117,7 +139,7 @@ namespace it_template.Areas.V1.Controllers
         }
         public async Task<JsonResult> Get(int id)
         {
-            var project = _context.ProjectModel.Where(d => d.id == id && d.deleted_at == null).Include(d => d.assignees).FirstOrDefault();
+            var project = _context.ProjectModel.Where(d => d.id == id && d.deleted_at == null).Include(d => d.assignees).Include(d => d.manager).FirstOrDefault();
 
             return Json(project);
         }

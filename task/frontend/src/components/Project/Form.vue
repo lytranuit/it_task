@@ -16,6 +16,13 @@
                     zIndex="3000">
                 </UserDepartmentTreeSelect>
             </div>
+            
+            <div class="mb-3 col-12">
+                <label for="assignee" class="form-label">Người quản lý</label>
+                <UserDepartmentTreeSelect name="createuser1" :multiple="true" :required="true" v-model="data.list_manager"
+                    zIndex="3000">
+                </UserDepartmentTreeSelect>
+            </div>
             <div class="col-12 text-center">
                 <Button type="submit" label="Lưu lại" icon="pi pi-save" size="small" @click="saveProject" />
             </div>
