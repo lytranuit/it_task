@@ -207,7 +207,8 @@ namespace it_template.Areas.V1.Controllers
                 ////SEND MAIL
                 if (list_add != null && list_add.Count() > 0)
                 {
-                    var users = _context.UserModel.Where(d => list_add.Contains(d.Id)).ToList();
+
+                    var users = _context.UserModel.Where(d => list_add.Contains(d.Id) || list_delete.Contains(d.Id)).ToList(); /// Gửi cho người assign và người bỏ assign
                     var mail_list = users.Select(u => u.Email).ToArray();
                     var mail_string = string.Join(",", mail_list);
                     string Domain = (HttpContext.Request.IsHttps ? "https://" : "http://") + HttpContext.Request.Host.Value;
